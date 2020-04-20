@@ -1,0 +1,25 @@
+.ContactPage {
+  text-align: justify;
+
+  form {
+    .text-box {
+      color: white;
+      background-color: #404040;
+      border: none;
+      width: 100%;
+      font-size: 16px;
+    }
+
+    .send-button {
+      color: white;
+      float: left;
+      background-color: #303030;
+      border: none;
+      padding: 5px 10px;
+    }
+  }
+
+  .Conversations {
+
+  }
+}
