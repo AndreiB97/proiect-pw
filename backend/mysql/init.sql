@@ -116,7 +116,7 @@ END //
 
 CREATE PROCEDURE get_random_question()
 BEGIN
-    SELECT *
+    SELECT QuestionID, Answer1, Answer2
     FROM QUESTION_POOL
     WHERE Flagged_offensive = 0
     ORDER BY RAND()
@@ -125,7 +125,7 @@ END //
 
 CREATE PROCEDURE get_random_question_for_user(IN user_id integer)
 BEGIN
-    SELECT *
+    SELECT QuestionID, Answer1, Answer2
     FROM QUESTION_POOL
     WHERE Flagged_offensive = 0 AND
         QuestionID NOT IN (
