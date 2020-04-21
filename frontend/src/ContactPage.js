@@ -67,10 +67,6 @@ class ContactPage extends React.Component {
 }
 
 class Conversations extends React.Component {
-    constructor(props) {
-        super(props);
-    }
-
     render() {
         return (
             <div className={'Conversations'}>
