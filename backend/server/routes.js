@@ -54,6 +54,8 @@ router.post('/login', (req, res) => {
 });
 
 router.post('/register', (req, res) => {
+    // TODO send confirmation email
+
     res.header(cors_header_name, cors_header_value);
 
     if (! ('username' in req.body)) {
@@ -99,11 +101,18 @@ router.get('/questions', (req, res) => {
 });
 
 router.get('/faq', (req, res) => {
-    console.log(req.query);
-    res.status(500).json({'error': 'not implemented'}).end();
+    res.header(cors_header_name, cors_header_value);
+
+    mysql.call_proc('get_flagged_important_messages', [], (result) => {
+        console.log(result);
+        res.status(200).json({
+            'faq': result
+        }).end();
+    });
 });
 
 router.put('/contact', (req, res) => {
+    // TODO email when answered
     res.header(cors_header_name, cors_header_value);
 
     if (! ('message' in req.body)) {
