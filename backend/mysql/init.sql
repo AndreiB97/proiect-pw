@@ -316,9 +316,9 @@ END //
 
 CREATE PROCEDURE get_flagged_important_messages()
 BEGIN
-    SELECT *
-    FROM MESSAGES
-    WHERE Flagged_important = 1;
+    SELECT m.Message, m.Response
+    FROM MESSAGES m, ADMINS a
+    WHERE m.Response IS NOT NULL AND m.Flagged_important = 1;
 END //
 
 CREATE PROCEDURE register_user(IN uname varchar(32), IN pword char(40), IN email varchar(64))
