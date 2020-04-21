@@ -40,9 +40,13 @@ class CollapsibleItem extends React.Component {
                     {this.state.response ?
                         <span>
                             <hr/>
-                            <p className={'admin_name'}>
-                                <span className={'username'}>{this.props.admin_name}</span> says:
-                            </p>
+                            {
+                                'admin_name' in this.props ?
+                                    <p className={'admin_name'}>
+                                        <span className={'username'}>{this.props.admin_name}</span> says:
+                                    </p> :
+                                    <span></span>
+                            }
                             <p className={'response'}>
                                 {this.props.response}
                             </p>
