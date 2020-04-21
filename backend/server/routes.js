@@ -95,16 +95,41 @@ router.post('/register', (req, res) => {
     });
 });
 
+// TODO move these
+
+function get_random_question(res) {
+    mysql.call_proc('get_random_question', [], (result) => {
+        res.status(200).json({'question': result}).end();
+    });
+}
+
+function get_random_question_for_user(user_id, res) {
+    mysql.call_proc('get_random_question_for_user', [user_id], (result) => {
+        res.status(200).json({'question': result}).end();
+    });
+}
+
 router.get('/questions', (req, res) => {
-    console.log(req.query);
-    res.status(500).json({'error': 'not implemented'}).end();
+    res.header(cors_header_name, cors_header_value);
+
+    if (! req.headers.authorization) {
+        get_random_question(res);
+    } else {
+        const token = req.headers.authorization.split(' ')[1];
+        const user_data = users.get_user(token);
+
+        if (user_data === undefined) {
+            get_random_question(res);
+        } else {
+            get_random_question_for_user(user_data.UserID, res);
+        }
+    }
 });
 
 router.get('/faq', (req, res) => {
     res.header(cors_header_name, cors_header_value);
 
     mysql.call_proc('get_flagged_important_messages', [], (result) => {
-        console.log(result);
         res.status(200).json({
             'faq': result
         }).end();
@@ -130,9 +155,7 @@ router.put('/contact', (req, res) => {
     const user_data = users.get_user(token);
 
     if (user_data !== undefined) {
-        mysql.call_proc('add_message', [user_data.UserID, req.body.message], () => {
-
-        });
+        mysql.call_proc('add_message', [user_data.UserID, req.body.message]);
     }
 
     res.status(200).end();
