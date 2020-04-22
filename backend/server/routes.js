@@ -3,8 +3,7 @@ const mysql = require('./dbInterface.js');
 const crypto = require('crypto-js');
 const users = require('./users.js');
 
-// TODO add other routes
-// TODO implement routes
+// TODO recheck status codes
 
 const cors_header_name = 'Access-Control-Allow-Origin';
 const cors_header_value = '*';
@@ -95,7 +94,7 @@ router.post('/register', (req, res) => {
     });
 });
 
-// TODO move these
+// TODO maybe move these or just have them inline
 
 function get_random_question(res) {
     mysql.call_proc('get_random_question', [], (result) => {
@@ -105,7 +104,15 @@ function get_random_question(res) {
 
 function get_random_question_for_user(user_id, res) {
     mysql.call_proc('get_random_question_for_user', [user_id], (result) => {
-        res.status(200).json({'question': result}).end();
+        if (result.length === 0) {
+            mysql.call_proc('get_random_question', [], (result) => {
+                res.status(200).json({'question': result}).end();
+
+                mysql.call_proc('view_question', [user_id, result[0].QuestionID], () => {});
+            });
+        } else {
+            res.status(200).json({'question': result}).end();
+        }
     });
 }
 
@@ -123,6 +130,49 @@ router.get('/questions', (req, res) => {
         } else {
             get_random_question_for_user(user_data.UserID, res);
         }
+    }
+});
+
+router.post('/questions', (req, res) => {
+    res.header(cors_header_name, cors_header_value);
+
+    console.log(req.body);
+
+    if (! ('answer' in req.body)) {
+        res.status(400).json({'error': 'Answer missing'}).end();
+        return;
+    }
+
+    console.log(req.body);
+
+    if (! ('question_id' in req.body)) {
+        res.status(400).json({'error': 'Question ID missing'}).end();
+        return;
+    }
+
+    console.log(req.body);
+
+    if (! req.headers.authorization) {
+        mysql.call_proc('get_question_stats', [req.body.question_id], (result) => {
+            console.log(result);
+            res.status(200).json({'stats': result}).end();
+        })
+        return;
+    }
+
+    const token = req.headers.authorization.split(' ')[1];
+
+    const user_data = users.get_user(token);
+
+    if (user_data !== undefined) {
+        mysql.call_proc('select_answer', [user_data.UserID, req.body.question_id, req.body.answer],
+            () => {
+            mysql.call_proc('get_question_stats', [req.body.question_id], (result) => {
+                res.status(200).json({'stats': result}).end();
+            })
+        });
+    } else {
+        res.status(200).json({'error': 'Not logged in'}).end();
     }
 });
 
