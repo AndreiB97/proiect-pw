@@ -59,6 +59,9 @@ CREATE TABLE MESSAGES (
 INSERT INTO ADMINS(Username, Password, Role)
 VALUES ('root', SHA1('root'), 1);
 
+INSERT INTO USERS(Username, Password, Email)
+VALUES ('aaaa', SHA1('aaaaaaaa'), aaaa@aaaa.a);
+
 INSERT INTO QUESTION_POOL(Answer1, Answer2)
 VALUES
 (
@@ -185,6 +188,20 @@ CREATE PROCEDURE view_question(IN user_id integer, IN question_id integer)
 BEGIN
     INSERT INTO VIEWED_QUESTIONS(UserID, QuestionID)
     VALUES (question_id, user_id);
+END //
+
+CREATE PROCEDURE get_question_stats(IN question_id integer)
+BEGIN
+    SELECT (
+        SELECT COUNT(*)
+        FROM VIEWED_QUESTIONS
+        WHERE selected_answer = 1
+    ) AS Answer1Count, (
+        SELECT COUNT(*)
+        FROM VIEWED_QUESTIONS
+        WHERE selected_answer = 2
+    ) AS Ans2Count
+    FROM VIEWED_QUESTIONS;
 END //
 
 CREATE PROCEDURE select_answer(IN user_id integer, IN question_ID integer, IN answer integer)
