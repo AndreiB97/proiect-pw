@@ -29,7 +29,7 @@ class ContactPage extends React.Component {
             params,
             {
                 headers: {
-                    'Authorization': `Bearer ${this.props.state().token}`
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
                 }
             }
         );
@@ -42,7 +42,7 @@ class ContactPage extends React.Component {
     }
 
     render() {
-        if ('token' in this.props.state()) {
+        if (localStorage.getItem('token') !== null) {
             return (
                 <div className={'ContactPage'}>
                     <h1>Message us below</h1>
