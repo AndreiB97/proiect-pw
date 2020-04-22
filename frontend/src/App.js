@@ -8,7 +8,10 @@ import ContactPage from "./ContactPage";
 import axios from "axios";
 
 // TODO admin account page
-// TODO admin should not be able to do regular user stuff
+// TODO admin should not be able to do regular user stuff so limit
+// TODO gdpr form
+// TODO rewrite certain parts of the code
+// TODO move get messages
 
 class App extends React.Component {
     constructor(props) {
@@ -37,13 +40,12 @@ class App extends React.Component {
             'http://localhost:80/contact',
             {
                 'headers': {
-                    'Authorization': `Bearer ${this.state.token}`
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
                 }
             }
         )
 
         this.setState(result.data);
-        console.log(this.state);
     }
 
     render() {
