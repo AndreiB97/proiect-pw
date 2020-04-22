@@ -195,13 +195,12 @@ BEGIN
     SELECT (
         SELECT COUNT(*)
         FROM VIEWED_QUESTIONS
-        WHERE selected_answer = 1
+        WHERE selected_answer = 1 AND QuestionID = question_id
     ) AS Answer1Count, (
         SELECT COUNT(*)
         FROM VIEWED_QUESTIONS
-        WHERE selected_answer = 2
-    ) AS Ans2Count
-    FROM VIEWED_QUESTIONS;
+        WHERE selected_answer = 2  AND QuestionID = question_id
+    ) AS Ans2Count;
 END //
 
 CREATE PROCEDURE select_answer(IN user_id integer, IN question_ID integer, IN answer integer)
