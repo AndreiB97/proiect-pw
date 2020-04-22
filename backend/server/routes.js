@@ -107,11 +107,11 @@ function get_random_question_for_user(user_id, res) {
         if (result.length === 0) {
             mysql.call_proc('get_random_question', [], (result) => {
                 res.status(200).json({'question': result}).end();
-
-                mysql.call_proc('view_question', [user_id, result[0].QuestionID], () => {});
             });
         } else {
             res.status(200).json({'question': result}).end();
+
+            mysql.call_proc('view_question', [user_id, result[0].QuestionID], () => {});
         }
     });
 }
@@ -136,27 +136,21 @@ router.get('/questions', (req, res) => {
 router.post('/questions', (req, res) => {
     res.header(cors_header_name, cors_header_value);
 
-    console.log(req.body);
-
     if (! ('answer' in req.body)) {
         res.status(400).json({'error': 'Answer missing'}).end();
         return;
     }
-
-    console.log(req.body);
 
     if (! ('question_id' in req.body)) {
         res.status(400).json({'error': 'Question ID missing'}).end();
         return;
     }
 
-    console.log(req.body);
-
     if (! req.headers.authorization) {
         mysql.call_proc('get_question_stats', [req.body.question_id], (result) => {
             console.log(result);
             res.status(200).json({'stats': result}).end();
-        })
+        });
         return;
     }
 
@@ -172,7 +166,10 @@ router.post('/questions', (req, res) => {
             })
         });
     } else {
-        res.status(200).json({'error': 'Not logged in'}).end();
+        mysql.call_proc('get_question_stats', [req.body.question_id], (result) => {
+            console.log(result);
+            res.status(200).json({'stats': result}).end();
+        });
     }
 });
 
