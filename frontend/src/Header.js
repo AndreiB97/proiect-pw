@@ -36,10 +36,7 @@ class Account extends React.Component {
         super(props);
 
         // reasons to hate javascript: this
-        this.onUsernameChange = this.onUsernameChange.bind(this);
-        this.onPasswordChange = this.onPasswordChange.bind(this);
         this.onLogin = this.onLogin.bind(this);
-        this.onEmailChange = this.onEmailChange.bind(this);
         this.onRegister = this.onRegister.bind(this);
         this.onLogout = this.onLogout.bind(this);
 
@@ -48,25 +45,12 @@ class Account extends React.Component {
         this.get_messages = this.props.get_messages;
     }
 
-    onPasswordChange(event) {
-        this.handler({'password': event.target.value});
-    };
-
-    onUsernameChange(event) {
-        this.handler({'username': event.target.value});
-    };
-
-    onEmailChange(event) {
-        this.handler({'email': event.target.value});
-    }
-
     async onLogin() {
         this.state.login_message = '';
         let params = new URLSearchParams();
-        const username = this.props.state().username;
 
-        params.append('username', this.props.state().username);
-        params.append('password', this.props.state().password);
+        params.append('username', this.state.login_username);
+        params.append('password', this.state.login_password);
 
         const response = await axios.post(
             'http://localhost:80/login',
@@ -77,14 +61,14 @@ class Account extends React.Component {
             this.state.login_message = response.data.error;
         } else {
             this.handler({
-                'logged_username': username,
-                'token': response.data.token,
                 'role': response.data.role
             });
 
-            axios.defaults.headers.common['Authorization'] = response.data.token;
+            this.setState({
+                'logged_username': this.state.login_username
+            });
 
-            await this.get_messages();
+            localStorage.setItem('token', response.data.token);
         }
 
         this.forceUpdate();
@@ -95,9 +79,9 @@ class Account extends React.Component {
 
         let params = new URLSearchParams();
 
-        params.append('email', this.props.state().email);
-        params.append('username', this.props.state().username);
-        params.append('password', this.props.state().password);
+        params.append('email', this.state.register_email);
+        params.append('username', this.state.register_username);
+        params.append('password', this.state.register_password);
 
         const response = await axios.post(
             'http://localhost:80/register',
@@ -114,21 +98,28 @@ class Account extends React.Component {
     };
 
     onLogout() {
-        axios.defaults.headers.common['Authorization'] = undefined;
+        localStorage.removeItem('token');
+
+        this.setState({
+            'logged_username': undefined
+        });
 
         this.handler({
-            'token': undefined,
-            'logged_username': undefined,
             'role': undefined
         })
     }
 
     render() {
-        if ('token' in this.props.state()) {
+        if (localStorage.getItem('token') !== null) {
             return (
                 <nav className={'Account'}>
                     <p>
-                        Welcome back <span className={'username'}>{this.props.state().logged_username}</span>! <a href={''} onClick={this.onLogout} className={'logout'}>
+                        {'Welcome back '}
+                        <span className={'username'}>
+                            {this.state.logged_username}
+                        </span>
+                        {'! '}
+                        <a href={''} onClick={this.onLogout} className={'logout'}>
                             (Log out)
                         </a>
                     </p>
@@ -142,9 +133,13 @@ class Account extends React.Component {
                         <div className="dropdown-content">
                             <form className={'account-form'} onSubmit={this.onLogin}>
                                 <input type={'text'} size={'32'} maxLength={'32'} placeholder={'Username'}
-                                       onChange={this.onUsernameChange} pattern={'.{4,}'} required/>
+                                       pattern={'.{4,}'} onChange={(event) => {
+                                           this.setState({'login_username': event.target.value});
+                                       }} required/>
                                 <input type={'password'} size={'32'} maxLength={'32'} placeholder={'Password'}
-                                       onChange={this.onPasswordChange} pattern={'.{4,}'} required/>
+                                       pattern={'.{4,}'} onChange={(event) => {
+                                           this.setState({'login_password': event.target.value});
+                                       }} required/>
                                 <input className={'submit'} type={'submit'} value={'Login'}/>
                                 <p className={'message'}>{this.state.login_message}</p>
                             </form>
@@ -156,12 +151,17 @@ class Account extends React.Component {
                         <div className={'dropdown-content'}>
                             <form className={'account-form'} onSubmit={this.onRegister}>
                                 <input type={'text'} size={'32'} maxLength={'64'} placeholder={'E-Mail'}
-                                       onChange={this.onEmailChange} pattern={'[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,}$'}
-                                       required/>
+                                       pattern={'[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,}$'} onChange={(event) => {
+                                           this.setState({'register_email': event.target.value});
+                                       }} required/>
                                 <input type={'text'} size={'32'} maxLength={'32'} placeholder={'Username'}
-                                       onChange={this.onUsernameChange} pattern={'.{4,}'} required/>
+                                       pattern={'.{4,}'} onChange={(event) => {
+                                           this.setState({'register_username': event.target.value});
+                                       }} required/>
                                 <input type={'password'} size={'32'} maxLength={'32'} placeholder={'Password'}
-                                       onChange={this.onPasswordChange} pattern={'.{8,}'} required/>
+                                       pattern={'.{8,}'} onChange={(event) => {
+                                           this.setState({'register_password': event.target.value});
+                                       }} required/>
                                 <input className={'submit'} type={'submit'} value={'Register'}/>
                                 <p className={'message'}>{this.state.register_message}</p>
                             </form>
