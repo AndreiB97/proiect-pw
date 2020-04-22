@@ -60,7 +60,7 @@ INSERT INTO ADMINS(Username, Password, Role)
 VALUES ('root', SHA1('root'), 1);
 
 INSERT INTO USERS(Username, Password, Email)
-VALUES ('aaaa', SHA1('aaaaaaaa'), aaaa@aaaa.a);
+VALUES ('aaaa', SHA1('aaaaaaaa'), 'aaaa@aaaa.a');
 
 INSERT INTO QUESTION_POOL(Answer1, Answer2)
 VALUES
@@ -196,7 +196,7 @@ BEGIN
         SELECT COUNT(*)
         FROM VIEWED_QUESTIONS
         WHERE selected_answer = 1 AND QuestionID = question_id
-    ) AS Answer1Count, (
+    ) AS Ans1Count, (
         SELECT COUNT(*)
         FROM VIEWED_QUESTIONS
         WHERE selected_answer = 2  AND QuestionID = question_id
