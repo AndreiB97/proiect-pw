@@ -187,7 +187,7 @@ END //
 CREATE PROCEDURE view_question(IN user_id integer, IN question_id integer)
 BEGIN
     INSERT INTO VIEWED_QUESTIONS(UserID, QuestionID)
-    VALUES (question_id, user_id);
+    VALUES (user_id, question_id);
 END //
 
 CREATE PROCEDURE get_question_stats(IN question_id integer)
