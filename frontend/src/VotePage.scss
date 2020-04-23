@@ -37,7 +37,8 @@
         display: flex;
         position: absolute;
         top:135px;
-        font-size: 30px;
+        font-size: 50px;
+        margin-left: 10px;
       }
 
       .percent {
@@ -54,7 +55,6 @@
         top: 10px;
         font-size: 18px;
       }
-
     }
 
     #blue_button {
@@ -84,4 +84,41 @@
     }
   }
 
+  .user-actions-container {
+    .score-container {
+      position: relative;
+      left: 225px;
+
+      .score {
+        background-color: #303030;
+        font-size: 70px;
+        padding: 0 25px;
+        margin-left: 15px;
+        border-radius: 50%;
+        border: none;
+      }
+
+      #like {
+        color: orange;
+      }
+
+      #selected-like {
+        background-color: orange;
+        color: #303030;
+      }
+
+      #dislike {
+        color: lightblue;
+      }
+
+      #selected-dislike {
+        background-color: lightblue;
+        color: #303030;
+      }
+
+      .score:hover {
+        background-color: #404040;
+      }
+    }
+  }
 }
