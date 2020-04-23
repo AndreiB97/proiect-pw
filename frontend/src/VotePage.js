@@ -19,6 +19,7 @@ class VotePage extends React.Component {
         this.get_button_text = this.get_button_text.bind(this);
         this.onLikeClick = this.onLikeClick.bind(this);
         this.onDislikeClick = this.onDislikeClick.bind(this);
+        this.onReportClick = this.onReportClick.bind(this);
     }
 
     async pick_answer(answer) {
@@ -68,6 +69,7 @@ class VotePage extends React.Component {
         this.state.questions[0]['voted'] = 0;
         this.state.questions[0]['like'] = 'like';
         this.state.questions[0]['dislike'] = 'dislike';
+        this.state.questions[0]['reported'] = false;
 
         this.forceUpdate();
     }
@@ -89,6 +91,7 @@ class VotePage extends React.Component {
         result.data.question[0]['voted'] = 0;
         result.data.question[0]['like'] = 'like';
         result.data.question[0]['dislike'] = 'dislike';
+        result.data.question[0]['reported'] = false;
 
         this.state.questions.push(result.data.question[0]);
     }
@@ -189,7 +192,7 @@ class VotePage extends React.Component {
         this.forceUpdate();
     }
 
-    async onDislikeClick() {
+    onDislikeClick() {
         this.state.questions[this.state.current_question_index]['like'] = 'like';
         this.state.questions[this.state.current_question_index]['dislike'] = 'selected-dislike';
 
@@ -209,6 +212,32 @@ class VotePage extends React.Component {
             params,
             options
         );
+
+        this.forceUpdate();
+    }
+
+    onReportClick() {
+        if (this.state.questions[this.state.current_question_index].reported) {
+            return;
+        }
+
+        let params = new URLSearchParams();
+
+        params.append('question_id', this.state.questions[this.state.current_question_index].QuestionID);
+
+        const options = {
+            'headers': {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+            }
+        };
+
+        axios.put(
+            'http://localhost:80/report',
+            params,
+            options
+        );
+
+        this.state.questions[this.state.current_question_index].reported = true;
 
         this.forceUpdate();
     }
@@ -237,22 +266,44 @@ class VotePage extends React.Component {
                     localStorage.getItem('token') !== null ?
                         <div className={'user-actions-container'}>
                             {
-                                'questions' in this.state &&
-                                this.state.questions[this.state.current_question_index].voted !== 0 ?
-                                    <div className={'score-container'}>
-                                        <button className={'score'} onClick={this.onDislikeClick}
-                                                id={this.state.questions[this.state.current_question_index].dislike}>
-                                            ⬇
+                                'questions' in this.state ?
+                                    <div>
+                                        <button className={'report'} onClick={this.onReportClick}>
+                                            {
+                                                this.state.questions[this.state.current_question_index].reported ?
+                                                    'Reported' :
+                                                    'Report'
+                                            }
                                         </button>
-                                        <button className={'score'} onClick={this.onLikeClick}
-                                                id={this.state.questions[this.state.current_question_index].like}>
-                                            ⬆
-                                        </button>
+
+                                        {
+                                            this.state.questions[this.state.current_question_index].voted !== 0 ?
+                                                <span className={'score-container'}>
+                                                    <button className={'score'} onClick={this.onDislikeClick}
+                                                            id={this.state.questions[this.state.current_question_index].dislike}>
+                                                        ⬇
+                                                    </button>
+                                                    <button className={'score'} onClick={this.onLikeClick}
+                                                            id={this.state.questions[this.state.current_question_index].like}>
+                                                        ⬆
+                                                    </button>
+                                                </span> :
+                                                <span/>
+                                        }
                                     </div> :
-                                    <span/>
+                                    <div/>
                             }
 
-
+                            <div className={'submit-question'}>
+                                <h1>Want to contribute? Send us your questions:</h1>
+                                <form>
+                                    <input type={'text'} maxLength={'128'} size={'64'}
+                                           placeholder={'Blue answer (Maximum 128 characters)'} required/>
+                                    <input type={'text'} maxLength={'128'} size={'64'}
+                                           placeholder={'Red answer (Maximum 128 characters)'} required/>
+                                    <input type={'submit'} value={'Send'}/>
+                                </form>
+                            </div>
                         </div> :
                         <span/>
                 }
