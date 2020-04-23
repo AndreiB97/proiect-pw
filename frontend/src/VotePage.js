@@ -2,15 +2,13 @@ import React from "react";
 import './VotePage.scss';
 import axios from "axios";
 
-// TODO submit question (after login)
-// TODO score question
-// TODO report
-
 class VotePage extends React.Component {
     constructor(props) {
         super(props);
 
-        this.state = {};
+        this.state = {
+            'blue': ''
+        };
 
         this.get_question = this.get_question.bind(this);
         this.onPrevClick = this.onPrevClick.bind(this);
@@ -20,6 +18,7 @@ class VotePage extends React.Component {
         this.onLikeClick = this.onLikeClick.bind(this);
         this.onDislikeClick = this.onDislikeClick.bind(this);
         this.onReportClick = this.onReportClick.bind(this);
+        this.onSend = this.onSend.bind(this);
     }
 
     async pick_answer(answer) {
@@ -242,6 +241,34 @@ class VotePage extends React.Component {
         this.forceUpdate();
     }
 
+    async onSend() {
+        const params = new URLSearchParams();
+
+        if (this.state.blue === '' || this.state.red === '') {
+            return;
+        }
+
+        params.append('blue', this.state.blue);
+        params.append('red', this.state.red);
+
+        const options = {
+            'headers': {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+            }
+        };
+
+        axios.put(
+            'http://localhost:80/questions',
+            params,
+            options
+        );
+
+        this.setState({
+            'blue': '',
+            'red': ''
+        });
+    }
+
     render() {
         return (
             <div className={'VotePage'}>
@@ -296,16 +323,18 @@ class VotePage extends React.Component {
 
                             <div className={'submit-question'}>
                                 <h1>Want to contribute? Send us your questions:</h1>
-                                <form>
-                                    <input type={'text'} maxLength={'128'} size={'64'}
-                                           placeholder={'Blue answer (Maximum 128 characters)'} required/>
-                                    <input type={'text'} maxLength={'128'} size={'64'}
-                                           placeholder={'Red answer (Maximum 128 characters)'} required/>
-                                    <input type={'submit'} value={'Send'}/>
+                                <form onSubmit={this.onSend}>
+                                    <input type={'text'} maxLength={'128'} size={'64'} value={this.state.blue}
+                                           placeholder={'Blue answer (Maximum 128 characters)'}
+                                           onChange={(event) => {this.setState({'blue': event.target.value})}}/>
+                                    <input type={'text'} maxLength={'128'} size={'64'} value={this.state.red}
+                                           placeholder={'Red answer (Maximum 128 characters)'}
+                                           onChange={(event) => {this.setState({'red': event.target.value})}}/>
+                                    <input className={'send'} type={'submit'} value={'Send'}/>
                                 </form>
                             </div>
                         </div> :
-                        <span/>
+                        <div/>
                 }
             </div>
         )
