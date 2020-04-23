@@ -146,6 +146,21 @@
 
       input {
         display: block;
+        background-color: #303030;
+        border: none;
+        margin-top: 5px;
+        color: white;
+        padding: 10px;
+        font-size: 20px;
+      }
+
+      .send {
+        border-radius: 5px;
+        padding: 10px 20px;
+      }
+
+      .send:hover {
+        background-color: #404040;
       }
     }
   }
