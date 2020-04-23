@@ -210,7 +210,6 @@ router.post('/questions', (req, res) => {
 
     if (! req.headers.authorization) {
         mysql.call_proc('get_question_stats', [req.body.question_id], (result) => {
-            console.log(result);
             res.status(200).json({'stats': result}).end();
         });
         return;
@@ -229,9 +228,38 @@ router.post('/questions', (req, res) => {
         });
     } else {
         mysql.call_proc('get_question_stats', [req.body.question_id], (result) => {
-            console.log(result);
             res.status(200).json({'stats': result}).end();
         });
+    }
+});
+
+router.put('/questions', (req, res) => {
+    res.header(cors_header_name, cors_header_value);
+
+    if (! ('blue' in req.body)) {
+        res.status(400).json({'error': 'Blue answer missing'}).end();
+        return;
+    }
+
+    if (! ('red' in req.body)) {
+        res.status(400).json({'error': 'Red answer missing'}).end();
+        return;
+    }
+
+    if (! req.headers.authorization) {
+        res.status(400).json({'error': 'Token missing'}).end();
+        return;
+    }
+
+    const token = req.headers.authorization.split(' ')[1];
+    const user_data = users.get_user(token);
+
+    if (user_data !== undefined) {
+        mysql.call_proc('add_user_submitted_question', [user_data.UserID, req.body.blue, req.body.red],
+            () => {});
+        res.status(200).end();
+    } else {
+        res.status(400).json({'error': 'Invalid token missing'}).end();
     }
 });
 
