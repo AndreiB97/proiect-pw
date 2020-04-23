@@ -133,6 +133,30 @@ router.get('/questions', (req, res) => {
     }
 });
 
+router.put('/report', (req, res) => {
+    res.header(cors_header_name, cors_header_value);
+
+    if (! ('question_id' in req.body)) {
+        res.status(400).json({'error': 'Question ID missing'}).end();
+        return;
+    }
+
+    if (! req.headers.authorization) {
+        res.status(400).json({'error': 'Token missing'}).end();
+        return;
+    }
+
+    const token = req.headers.authorization.split(' ')[1];
+    const user_data = users.get_user(token);
+
+    if (user_data !== undefined) {
+        mysql.call_proc('report_question', [user_data.UserID, req.body.question_id, 1], () => {});
+        res.status(200).end();
+    } else {
+        res.status(400).json({'error': 'Invalid token'}).end();
+    }
+})
+
 router.post('/score', (req, res) => {
     res.header(cors_header_name, cors_header_value);
 
