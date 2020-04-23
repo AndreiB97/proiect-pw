@@ -17,6 +17,8 @@ class VotePage extends React.Component {
         this.onNextClick = this.onNextClick.bind(this);
         this.pick_answer = this.pick_answer.bind(this);
         this.get_button_text = this.get_button_text.bind(this);
+        this.onLikeClick = this.onLikeClick.bind(this);
+        this.onDislikeClick = this.onDislikeClick.bind(this);
     }
 
     async pick_answer(answer) {
@@ -48,14 +50,24 @@ class VotePage extends React.Component {
     }
 
     async componentDidMount() {
-        const result = await axios.get(
-            'http://localhost:80/questions'
-        )
+        let options = {};
 
+        if (localStorage.getItem('token') !== null) {
+            options['headers'] = {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+            }
+        }
+
+        const result = await axios.get(
+            'http://localhost:80/questions',
+            options
+        )
         this.state.current_question_index = 0;
         this.state.questions = result.data.question;
 
         this.state.questions[0]['voted'] = 0;
+        this.state.questions[0]['like'] = 'like';
+        this.state.questions[0]['dislike'] = 'dislike';
 
         this.forceUpdate();
     }
@@ -75,6 +87,8 @@ class VotePage extends React.Component {
         )
 
         result.data.question[0]['voted'] = 0;
+        result.data.question[0]['like'] = 'like';
+        result.data.question[0]['dislike'] = 'dislike';
 
         this.state.questions.push(result.data.question[0]);
     }
@@ -151,6 +165,54 @@ class VotePage extends React.Component {
         }
     }
 
+    onLikeClick() {
+        this.state.questions[this.state.current_question_index]['like'] = 'selected-like';
+        this.state.questions[this.state.current_question_index]['dislike'] = 'dislike';
+
+        let params = new URLSearchParams();
+
+        params.append('score', 1);
+        params.append('question_id', this.state.questions[this.state.current_question_index].QuestionID);
+
+        const options = {
+            'headers': {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+            }
+        };
+
+        axios.post(
+            'http://localhost:80/score',
+            params,
+            options
+        );
+
+        this.forceUpdate();
+    }
+
+    async onDislikeClick() {
+        this.state.questions[this.state.current_question_index]['like'] = 'like';
+        this.state.questions[this.state.current_question_index]['dislike'] = 'selected-dislike';
+
+        let params = new URLSearchParams();
+
+        params.append('score', -1);
+        params.append('question_id', this.state.questions[this.state.current_question_index].QuestionID);
+
+        const options = {
+            'headers': {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+            }
+        };
+
+        axios.post(
+            'http://localhost:80/score',
+            params,
+            options
+        );
+
+        this.forceUpdate();
+    }
+
     render() {
         return (
             <div className={'VotePage'}>
@@ -171,7 +233,29 @@ class VotePage extends React.Component {
                     </button>
                     <button className={'NavigationButton'} onClick={this.onNextClick}>{'>'}</button>
                 </div>
+                {
+                    localStorage.getItem('token') !== null ?
+                        <div className={'user-actions-container'}>
+                            {
+                                'questions' in this.state &&
+                                this.state.questions[this.state.current_question_index].voted !== 0 ?
+                                    <div className={'score-container'}>
+                                        <button className={'score'} onClick={this.onDislikeClick}
+                                                id={this.state.questions[this.state.current_question_index].dislike}>
+                                            ⬇
+                                        </button>
+                                        <button className={'score'} onClick={this.onLikeClick}
+                                                id={this.state.questions[this.state.current_question_index].like}>
+                                            ⬆
+                                        </button>
+                                    </div> :
+                                    <span/>
+                            }
 
+
+                        </div> :
+                        <span/>
+                }
             </div>
         )
     }
