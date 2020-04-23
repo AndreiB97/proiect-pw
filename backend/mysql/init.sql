@@ -212,15 +212,9 @@ END //
 
 CREATE PROCEDURE score_question(IN user_id integer, IN question_id integer, IN score_value integer)
 BEGIN
-    DECLARE old_score integer;
-
-    SELECT Score INTO old_score
-    FROM VIEWED_QUESTIONS
-    WHERE UserID = user_id AND QuestionID = question_id;
-
     UPDATE VIEWED_QUESTIONS
-    SET Score = old_score + score_value
-    WHERE UserID = user_id AND QuestionID;
+    SET Score = score_value
+    WHERE UserID = user_id AND QuestionID = question_id;
 END //
 
 CREATE PROCEDURE add_message(IN user_id integer, IN message varchar(512))
