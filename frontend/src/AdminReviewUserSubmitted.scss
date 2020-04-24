@@ -1,0 +1,65 @@
+.AdminReviewUserSubmitted {
+  text-align: justify;
+
+  table {
+    font-size: 20px;
+    border: none;
+    width: 100%;
+
+    .TableHeader {
+      position: sticky;
+      top: 0;
+      background-color: #202020;
+    }
+
+    tr {
+      button {
+        color: white;
+        font-size: 20px;
+        padding: 5px 10px;
+        border: none;
+        background-color: #40404000;
+      }
+
+      button:hover {
+        background-color: #404040;
+      }
+
+      td {
+        padding: 5px 10px;
+        max-width: 200px;
+        word-wrap: break-word;
+      }
+    }
+
+    tr:nth-child(odd) {
+      background-color: #202020;
+    }
+
+    tr:nth-child(even) {
+      background-color: #101010;
+    }
+  }
+
+  .TableNavigation {
+    font-size: 20px;
+
+    button {
+      font-size: 20px;
+      border: none;
+      background-color: #303030;
+      color: white;
+      padding: 10px 15px;
+      margin: 5px;
+      border-radius: 10px;
+    }
+
+    button:hover {
+      background-color: #404040;
+    }
+
+    span {
+      margin: 5px;
+    }
+  }
+}
