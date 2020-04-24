@@ -5,20 +5,20 @@
   margin-top: -10px;
   text-decoration: none;
 
-  .logout {
+  .Logout {
     color: #3e8eff;
     background-color: #202020;
     text-decoration: none;
     border: none;
   }
 
-  .dropdown {
+  .Dropdown {
     position: relative;
     display: inline-block;
     margin-top: 10px;
   }
 
-  .dropdown-content {
+  .DropdownContent {
     display: none;
     position: absolute;
     background-color: #303030;
@@ -27,7 +27,7 @@
     box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
     z-index: 1;
 
-    .account-form {
+    .AccountForm {
       input {
         margin: 4px;
         padding: 2px 8px;
@@ -36,12 +36,12 @@
         color: white;
       }
 
-      .submit {
+      .Submit {
         float:left;
         padding: 5px 10px ;
       }
 
-      .message {
+      .Message {
         font-size:14px;
         float: left;
         margin-left: 5px;
@@ -50,11 +50,11 @@
     }
   }
 
-  .dropdown:hover {
-    .dropdown-content {display: block;}
+  .Dropdown:hover {
+    .DropdownContent {display: block;}
   }
 
-  .dropdown-button {
+  .DropdownButton {
     font-size: 12px;
     display: inline-block;
     color: white;
@@ -63,7 +63,7 @@
     border: none;
   }
 
-  .dropdown-button:hover {
+  .DropdownButton:hover {
     background-color: #252525;
   }
 }
