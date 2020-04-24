@@ -1,3 +1,5 @@
+-- TODO add some faq messages
+
 CREATE DATABASE db;
 
 USE db;
@@ -148,8 +150,9 @@ END //
 
 CREATE PROCEDURE get_user_submitted_questions()
 BEGIN
-    SELECT *
-    FROM USER_SUBMITTED_QUESTIONS;
+    SELECT q.QuestionID, u.Username, q.Answer1, q.Answer2
+    FROM USER_SUBMITTED_QUESTIONS q, USERS u
+    WHERE q.UserID = u.UserID;
 END //
 
 CREATE PROCEDURE flag_question(IN id integer, IN flag_value integer)
