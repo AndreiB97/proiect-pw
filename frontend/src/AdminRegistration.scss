@@ -1,0 +1,36 @@
+.AddAdmin {
+  text-align: justify;
+
+  .AddAdminForm {
+    input {
+      margin: 4px;
+      padding: 2px 8px;
+      background-color: #303030;
+      font-size: 20px;
+      border: none;
+      color: white;
+    }
+
+    label {
+      font-size: 20px;
+      margin: 5px;
+    }
+
+    .Submit {
+      float: left;
+      border-radius: 5px;
+      padding: 7px 15px;
+    }
+
+    .Submit:hover {
+      background-color: #404040;
+    }
+
+    .Message {
+      color:red;
+      font-size:20px;
+      margin-left: 5px;
+      margin-top: 7px;
+    }
+  }
+}
