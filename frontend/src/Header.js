@@ -17,7 +17,7 @@ class Header extends React.Component {
                         <NavLink className={'NavLink'} to={'/contact'}><li>Contact</li></NavLink>
                     </ul>
                 </nav>
-                <Account/>
+                <Account refresh={this.props.refresh}/>
             </div>
         );
     }
