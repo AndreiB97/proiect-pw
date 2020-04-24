@@ -11,11 +11,16 @@ class Header extends React.Component {
                     <h1>Would You Rather...</h1>
                 </div>
                 <nav className={'Nav'}>
-                    <ul>
-                        <NavLink className={'NavLink'} to={'/'}><li>Home</li></NavLink>
-                        <NavLink className={'NavLink'} to={'/faq'}><li>FAQ</li></NavLink>
-                        <NavLink className={'NavLink'} to={'/contact'}><li>Contact</li></NavLink>
-                    </ul>
+                    {
+                        localStorage.getItem('role') === null ?
+                            <ul>
+                                <NavLink className={'NavLink'} to={'/'}><li>Home</li></NavLink>
+                                <NavLink className={'NavLink'} to={'/faq'}><li>FAQ</li></NavLink>
+                                <NavLink className={'NavLink'} to={'/contact'}><li>Contact</li></NavLink>
+                            </ul> :
+                            <span/>
+                    }
+
                 </nav>
                 <Account refresh={this.props.refresh}/>
             </div>
