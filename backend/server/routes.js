@@ -8,6 +8,54 @@ const users = require('./users.js');
 const cors_header_name = 'Access-Control-Allow-Origin';
 const cors_header_value = '*';
 
+router.post('/admin_register', (req, res) => {
+    res.header(cors_header_name, cors_header_value);
+
+    if (! ('username' in req.body)) {
+        res.status(400).json({'error': 'Username missing'}).end();
+        return;
+    }
+
+    if (! ('password' in req.body)) {
+        res.status(400).json({'error': 'Password missing'}).end();
+        return;
+    }
+
+    if (! ('type' in req.body)) {
+        res.status(400).json({'error': 'Account type missing'}).end();
+        return;
+    }
+
+    if (req.body.type !== '1' && req.body.type !== '2') {
+        res.status(400).json({'error': 'Invalid account type'}).end();
+        return;
+    }
+
+    if (! req.headers.authorization) {
+        res.status(400).json({'error': 'Token missing'}).end();
+        return;
+    }
+
+    const user_data = users.log_admin(req.headers.authorization.split(' ')[1]);
+
+    if (user_data === undefined) {
+        res.status(400).json({'error': 'Invalid token'}).end();
+        return;
+    }
+
+    mysql.call_proc('username_taken', [req.body.username], (result) => {
+        // reasons to hate javascript: callbacks
+        if (result.length === 0) {
+            mysql.call_proc('register_admin', [req.body.username,
+                crypto.SHA1(req.body.password).toString(), req.body.type], () => {
+                res.status(200).end();
+            });
+        } else {
+            res.status(400).json({'error': 'Username taken'}).end();
+        }
+    });
+})
+
 router.post('/login', (req, res) => {
     res.header(cors_header_name, cors_header_value);
 
