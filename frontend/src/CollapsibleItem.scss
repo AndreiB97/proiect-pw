@@ -1,5 +1,5 @@
 .CollapsibleItem {
-  .collapsible {
+  .Collapsible {
     background-color: #303030;
     color: white;
     cursor: pointer;
@@ -12,11 +12,11 @@
     font-weight: bold;
   }
 
-  .collapsible:hover {
+  .Collapsible:hover {
     background-color: #404040;
   }
 
-  .collapsible-content {
+  .CollapsibleContent {
     padding: 0 18px;
     display: block;
     overflow: hidden;
@@ -29,7 +29,7 @@
     word-wrap:break-word;
   }
 
-  .collapsible-content-hidden {
+  .CollapsibleContentHidden {
     display: none;
   }
 }

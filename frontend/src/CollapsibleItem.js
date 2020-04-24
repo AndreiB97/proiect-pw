@@ -8,7 +8,7 @@ class CollapsibleItem extends React.Component {
         this.toggleCollapsible = this.toggleCollapsible.bind(this);
 
         this.state = {
-            content_className: 'collapsible-content-hidden',
+            content_className: 'CollapsibleContentHidden',
             header: this.props.header,
             content: this.props.content,
             response: this.props.response,
@@ -17,13 +17,13 @@ class CollapsibleItem extends React.Component {
     }
 
     toggleCollapsible() {
-        if (this.state.content_className === 'collapsible-content-hidden') {
+        if (this.state.content_className === 'CollapsibleContentHidden') {
             this.setState({
-                content_className: 'collapsible-content'
+                content_className: 'CollapsibleContent'
             });
         } else {
             this.setState({
-                content_className: 'collapsible-content-hidden'
+                content_className: 'CollapsibleContentHidden'
             });
         }
     }
@@ -31,27 +31,28 @@ class CollapsibleItem extends React.Component {
     render() {
         return (
             <div className={'CollapsibleItem'}>
-                <button className={'collapsible'} onClick={this.toggleCollapsible}>{this.props.header}</button>
-
+                <button className={'Collapsible'} onClick={this.toggleCollapsible}>{this.props.header}</button>
                 <div className={this.state.content_className}>
-                    <p className={'content'}>
+                    <p className={'Content'}>
                         {this.props.content}
                     </p>
-                    {this.state.response ?
-                        <span>
-                            <hr/>
-                            {
-                                'admin_name' in this.props ?
-                                    <p className={'admin_name'}>
-                                        <span className={'username'}>{this.props.admin_name}</span> says:
-                                    </p> :
-                                    <span></span>
-                            }
-                            <p className={'response'}>
-                                {this.props.response}
-                            </p>
-                        </span> :
-                        <span></span>}
+                    {
+                        this.state.response !== undefined ?
+                            <span>
+                                <hr/>
+                                {
+                                    'admin_name' in this.props ?
+                                        <p>
+                                            <span className={'Highlight'}>{this.props.admin_name}</span> says:
+                                        </p> :
+                                        <span/>
+                                }
+                                        <p>
+                                    {this.props.response}
+                                </p>
+                            </span> :
+                            <span/>
+                    }
                 </div>
             </div>
         )
