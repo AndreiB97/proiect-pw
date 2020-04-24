@@ -33,7 +33,7 @@
       word-wrap: break-word;
       display: inline-block;
 
-      .check-mark {
+      .CheckMark {
         display: flex;
         position: absolute;
         top:135px;
@@ -41,16 +41,16 @@
         margin-left: 10px;
       }
 
-      .percent {
+      .Percent {
         font-size: 40px;
       }
 
-      .count {
+      .Count {
         position: relative;
         font-size: 30px;
       }
 
-      .answer {
+      .Answer {
         position: relative;
         top: 10px;
         font-size: 18px;
@@ -84,9 +84,9 @@
     }
   }
 
-  .user-actions-container {
-    .score-container {
-      .score {
+  .UserActionsContainer {
+    .ScoreContainer {
+      .Score {
         position: relative;
         left: 225px;
         background-color: #303030;
@@ -115,12 +115,12 @@
         color: #303030;
       }
 
-      .score:hover {
+      .Score:hover {
         background-color: #404040;
       }
     }
 
-    .report {
+    .Report {
       position: absolute;
       margin-top: 18px;
       left: 225px;
@@ -132,11 +132,11 @@
       border-radius: 5px;
     }
 
-    .report:hover {
+    .Report:hover {
       background-color: #404040;
     }
 
-    .submit-question {
+    .SubmitQuestion {
       position: absolute;
       top: 475px;
 
@@ -154,12 +154,12 @@
         font-size: 20px;
       }
 
-      .send {
+      .Send {
         border-radius: 5px;
         padding: 10px 20px;
       }
 
-      .send:hover {
+      .Send:hover {
         background-color: #404040;
       }
     }
