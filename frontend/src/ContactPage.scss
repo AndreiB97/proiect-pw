@@ -2,24 +2,28 @@
   text-align: justify;
 
   form {
-    .text-box {
+    .TextBox {
       color: white;
       background-color: #404040;
       border: none;
-      width: 100%;
-      font-size: 16px;
+      min-width: 50%;
+      min-height: 100px;
+      font-size: 25px;
+      padding-left: 5px;
+      margin-bottom: 10px;
     }
 
-    .send-button {
+    .SendButton {
       color: white;
-      float: left;
       background-color: #303030;
       border: none;
-      padding: 5px 10px;
+      font-size: 25px;
+      padding: 10px 20px;
+      border-radius: 10px;
     }
-  }
 
-  .Conversations {
-
+    .SendButton:hover {
+      background-color: #404040;
+    }
   }
 }
