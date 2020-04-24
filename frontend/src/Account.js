@@ -41,7 +41,7 @@ class Account extends React.Component {
             localStorage.setItem('token', response.data.token);
         }
 
-        this.forceUpdate();
+        this.props.refresh();
     };
 
     async onRegister() {
@@ -62,7 +62,7 @@ class Account extends React.Component {
             this.setState({'register_message': 'Registration complete'});
         }
 
-        this.forceUpdate();
+        this.props.refresh();
     };
 
     onLogout() {
@@ -73,10 +73,10 @@ class Account extends React.Component {
 
     getLoginDropdown() {
         return (
-            <div className={'dropdown'}>
-                <button className={'dropdown-button'}>Login</button>
-                <div className="dropdown-content">
-                    <form className={'account-form'} onSubmit={this.onLogin}>
+            <div className={'Dropdown'}>
+                <button className={'DropdownButton'}>Login</button>
+                <div className={'DropdownContent'}>
+                    <form className={'AccountForm'} onSubmit={this.onLogin}>
                         <input type={'text'} size={'32'} maxLength={'32'} placeholder={'Username'}
                                pattern={'.{4,}'} onChange={(event) => {
                             this.setState({'login_username': event.target.value});
@@ -85,8 +85,8 @@ class Account extends React.Component {
                                pattern={'.{4,}'} onChange={(event) => {
                             this.setState({'login_password': event.target.value});
                         }} required/>
-                        <input className={'submit'} type={'submit'} value={'Login'}/>
-                        <p className={'message'}>{this.state.login_message}</p>
+                        <input className={'Submit'} type={'submit'} value={'Login'}/>
+                        <p className={'Message'}>{this.state.login_message}</p>
                     </form>
                 </div>
             </div>
@@ -95,10 +95,10 @@ class Account extends React.Component {
 
     getRegisterDropdown() {
         return (
-            <div className={'dropdown'}>
-                <button className={'dropdown-button'}>Register</button>
-                <div className={'dropdown-content'}>
-                    <form className={'account-form'} onSubmit={this.onRegister}>
+            <div className={'Dropdown'}>
+                <button className={'DropdownButton'}>Register</button>
+                <div className={'DropdownContent'}>
+                    <form className={'AccountForm'} onSubmit={this.onRegister}>
                         <input type={'text'} size={'32'} maxLength={'64'} placeholder={'E-Mail'}
                                pattern={'[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,}$'} onChange={(event) => {
                             this.setState({'register_email': event.target.value});
@@ -111,8 +111,8 @@ class Account extends React.Component {
                                pattern={'.{8,}'} onChange={(event) => {
                             this.setState({'register_password': event.target.value});
                         }} required/>
-                        <input className={'submit'} type={'submit'} value={'Register'}/>
-                        <p className={'message'}>{this.state.register_message}</p>
+                        <input className={'Submit'} type={'submit'} value={'Register'}/>
+                        <p className={'Message'}>{this.state.register_message}</p>
                     </form>
                 </div>
             </div>
@@ -125,11 +125,11 @@ class Account extends React.Component {
                 <nav className={'Account'}>
                     <p>
                         {'Welcome back '}
-                        <span className={'highlight'}>
+                        <span className={'Highlight'}>
                             {localStorage.getItem('username')}
                         </span>
                         {'! '}
-                        <a href={''} onClick={this.onLogout} className={'logout'}>
+                        <a href={''} onClick={this.onLogout} className={'Logout'}>
                             (Log out)
                         </a>
                     </p>
