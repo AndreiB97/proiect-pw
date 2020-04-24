@@ -37,7 +37,7 @@ class AdminRegistration extends React.Component {
         }
 
         axios.post(
-            'http://localhost:80/admin_register',
+            'http://localhost:80/admin/register',
             params,
             options
         ).then(() => {
