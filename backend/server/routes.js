@@ -4,11 +4,11 @@ const crypto = require('crypto-js');
 const users = require('./users.js');
 
 // TODO recheck status codes
-
+// TODO maybe split this into multiple files
 const cors_header_name = 'Access-Control-Allow-Origin';
 const cors_header_value = '*';
 
-router.post('/admin_register', (req, res) => {
+router.post('/admin/register', (req, res) => {
     res.header(cors_header_name, cors_header_value);
 
     if (! ('username' in req.body)) {
@@ -55,6 +55,25 @@ router.post('/admin_register', (req, res) => {
         }
     });
 })
+
+router.get('/admin/user_submitted', (req, res) => {
+    if (! req.headers.authorization) {
+        res.status(400).json({'error': 'Token missing'}).end();
+        return;
+    }
+
+    const user_data = users.log_admin(req.headers.authorization.split(' ')[1]);
+
+    if (user_data === undefined) {
+        res.status(400).json({'error': 'Invalid token'}).end();
+        return;
+    }
+
+    mysql.call_proc('get_user_submitted_questions', [], (result) => {
+        // reasons to hate javascript: callbacks
+        res.status(200).json(result);
+    });
+});
 
 router.post('/login', (req, res) => {
     res.header(cors_header_name, cors_header_value);
