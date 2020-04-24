@@ -86,14 +86,14 @@ class VotePage extends React.Component {
     onPrevClick() {
         if (this.state.current_question_index !== undefined &&
             this.state.current_question_index > 0) {
-            this.state.current_question_index--;
+            this.setState({'current_question_index': this.state.current_question_index - 1});
 
             this.forceUpdate();
         }
     }
 
     async onNextClick() {
-        this.state.current_question_index++;
+        this.setState({'current_question_index': this.state.current_question_index + 1});
 
         if (this.state.current_question_index === this.state.questions.length) {
             await this.getQuestion();
