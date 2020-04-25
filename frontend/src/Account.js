@@ -56,8 +56,12 @@ class Account extends React.Component {
             params
         );
 
-        if ('error' in response.data) {
-            this.setState({'register_message': response.data.error});
+        if (response.data !== '') {
+            if ('error' in response.data) {
+                this.setState({'register_message': response.data.error});
+            } else {
+                console.log(response.data);
+            }
         } else {
             this.setState({'register_message': 'Registration complete'});
         }
