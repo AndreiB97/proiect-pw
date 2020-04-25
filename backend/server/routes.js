@@ -70,9 +70,52 @@ router.get('/admin/user_submitted', (req, res) => {
     }
 
     mysql.call_proc('get_user_submitted_questions', [], (result) => {
-        // reasons to hate javascript: callbacks
-        res.status(200).json(result);
+        res.status(200).json(result).end();
     });
+});
+
+router.post('/admin/user_submitted', (req, res) => {
+    if (! ('question_id') in req.body) {
+        res.status(400).json({'error': 'Question ID missing'}).end();
+        return;
+    }
+
+    if (! ('action' in req.body)) {
+        res.status(400).json({'error': 'Action missing'}).end();
+        return;
+    }
+
+    if (! req.headers.authorization) {
+        res.status(400).json({'error': 'Token missing'}).end();
+        return;
+    }
+
+    const user_data = users.log_admin(req.headers.authorization.split(' ')[1]);
+
+    if (user_data === undefined) {
+        res.status(400).json({'error': 'Invalid token'}).end();
+        return;
+    }
+
+    switch(req.body.action) {
+        case '1':
+            mysql.call_proc('approve_user_submitted_question', [req.body.question_id], () => {
+                res.status(200).end();
+            });
+            break;
+        case '2':
+            mysql.call_proc('report_user_submitted_question_author', [req.body.question_id], () => {
+                res.status(200).end();
+            });
+            break;
+        case '3':
+            mysql.call_proc('delete_user_submitted_question', [req.body.question_id], () => {
+                res.status(200).end();
+            });
+            break;
+        default:
+            res.status(400).json({'error': 'Invalid action'}).end();
+    }
 });
 
 router.post('/login', (req, res) => {
