@@ -103,7 +103,7 @@ BEGIN
     VALUES (ans1, ans2);
 END //
 
-CREATE PROCEDURE approve_question(IN id integer)
+CREATE PROCEDURE approve_user_submitted_question(IN id integer)
 BEGIN
     DECLARE ans1 varchar(128);
     DECLARE ans2 varchar(128);
