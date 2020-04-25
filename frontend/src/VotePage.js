@@ -6,7 +6,10 @@ class VotePage extends React.Component {
     constructor(props) {
         super(props);
 
-        this.state = {};
+        this.state = {
+            'questions': [],
+            'current_question_index': 0
+        };
 
         this.getQuestion = this.getQuestion.bind(this);
         this.onPrevClick = this.onPrevClick.bind(this);
@@ -53,9 +56,6 @@ class VotePage extends React.Component {
     }
 
     async componentDidMount() {
-        this.state.questions = [];
-        this.state.current_question_index = 0;
-
         await this.getQuestion();
 
         this.forceUpdate();
@@ -93,17 +93,17 @@ class VotePage extends React.Component {
     }
 
     async onNextClick() {
-        this.setState({'current_question_index': this.state.current_question_index + 1});
-
-        if (this.state.current_question_index === this.state.questions.length) {
+        if (this.state.current_question_index + 1 === this.state.questions.length) {
             await this.getQuestion();
         }
+
+        await this.setState({'current_question_index': this.state.current_question_index + 1});
 
         this.forceUpdate();
     }
 
     getButtonText(button) {
-        if (this.state.questions === undefined) {
+        if (this.state.questions.length === 0) {
             return ''
         }
 
@@ -274,7 +274,7 @@ class VotePage extends React.Component {
     }
 
     getQuestionActions() {
-        if (! ('questions' in this.state)) {
+        if (this.state.questions.length === 0) {
             return;
         }
 
