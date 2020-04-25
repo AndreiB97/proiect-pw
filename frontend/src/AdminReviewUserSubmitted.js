@@ -2,8 +2,6 @@ import React from "react";
 import './AdminReviewUserSubmitted.scss'
 import axios from 'axios';
 
-// TODO last page is 2 of 3?
-
 class AdminReviewUserSubmitted extends React.Component {
     constructor(props) {
         super(props);
@@ -36,10 +34,35 @@ class AdminReviewUserSubmitted extends React.Component {
         this.forceUpdate();
     }
 
-    onActionButtonClick(question_id, action) {
-        // TODO send action
-        // TODO remove from array
-        console.log(question_id);
+    onActionButtonClick(question_id, action, index) {
+        const params = new URLSearchParams();
+
+        params.append('question_id', question_id);
+        params.append('action', action);
+
+        const options = {
+            'headers': {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+            }
+        }
+
+        axios.post(
+            'http://localhost:80/admin/user_submitted',
+            params,
+            options
+        ).then(() => {
+            this.state.user_submitted.splice(index, 1);
+            console.log('here');
+            this.forceUpdate();
+        }).catch((error) => {
+            if ('response' in error) {
+                console.log(error.response);
+                console.log(error);
+            } else {
+                this.forceUpdate();
+                console.log(error);
+            }
+        })
     }
 
     getSubmittedQuestions() {
@@ -67,21 +90,21 @@ class AdminReviewUserSubmitted extends React.Component {
                                     <td>{current.Answer2}</td>
                                     <td>
                                         <button onClick={() => {
-                                            this.onActionButtonClick(current.QuestionID, 1);
+                                            this.onActionButtonClick(current.QuestionID, 1, index);
                                         }}>
                                             Approve
                                         </button>
                                     </td>
                                     <td>
                                         <button onClick={() => {
-                                            this.onActionButtonClick(current.QuestionID, 2);
+                                            this.onActionButtonClick(current.QuestionID, 2, index);
                                         }}>
                                             Report User
                                         </button>
                                     </td>
                                     <td>
                                         <button onClick={() => {
-                                            this.onActionButtonClick(current.QuestionID, 3);
+                                            this.onActionButtonClick(current.QuestionID, 3, index);
                                         }}>
                                             Delete
                                         </button>
@@ -116,7 +139,9 @@ class AdminReviewUserSubmitted extends React.Component {
                     Page {
                         Math.round(this.state.current_index / this.state.batch_size) + 1
                     } of {
-                        Math.ceil(this.state.user_submitted.length / this.state.batch_size)
+                        this.state.user_submitted.length === 0 ?
+                            1 :
+                            Math.ceil(this.state.user_submitted.length / this.state.batch_size)
                     }
                 </span>
                 <button onClick={() => {
@@ -134,7 +159,8 @@ class AdminReviewUserSubmitted extends React.Component {
                 <button onClick={() => {
                     this.setState({
                         'current_index': this.state.user_submitted.length > this.state.batch_size ?
-                            this.state.user_submitted.length - this.state.batch_size :
+                            (Math.ceil(this.state.user_submitted.length / this.state.batch_size) - 1) *
+                                this.state.batch_size :
                             0
                     });
                 }}>
@@ -147,7 +173,7 @@ class AdminReviewUserSubmitted extends React.Component {
     render() {
         return (
             <div className={'AdminReviewUserSubmitted'}>
-                <h1>Review user submitted questions</h1>
+                <h1 className={'Highlight'}>Review user submitted questions</h1>
                 {
                     this.getSubmittedQuestions()
                 }
