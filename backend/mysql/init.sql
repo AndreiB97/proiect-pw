@@ -60,6 +60,9 @@ CREATE TABLE MESSAGES (
 INSERT INTO ADMINS(Username, Password, Role)
 VALUES ('root', SHA1('root'), 1);
 
+INSERT INTO ADMINS(Username, Password, Role)
+VALUES ('support', SHA1('root'), 2);
+
 INSERT INTO USERS(Username, Password, Email)
 VALUES ('aaaa', SHA1('aaaaaaaa'), 'aaaa@aaaa.a');
 
@@ -218,9 +221,9 @@ END //
 
 CREATE PROCEDURE get_unanswered_messages()
 BEGIN
-    SELECT *
-    FROM MESSAGES
-    WHERE Response IS NULL;
+    SELECT m.MessageID, u.Username, m.Message
+    FROM MESSAGES m, USERS u
+    WHERE Response IS NULL AND m.UserID = u.UserID;
 END //
 
 CREATE PROCEDURE get_user_messages_no_response(IN id integer)
