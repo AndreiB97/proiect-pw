@@ -61,7 +61,7 @@ class AdminRegistration extends React.Component {
     render() {
         return (
             <div className={'AddAdmin'}>
-                <h1>Add administrator account</h1>
+                <h1 className={'Highlight'}>Add administrator account</h1>
                 <form className={'AddAdminForm'} onSubmit={this.onFormSubmit}>
                     <input type={'text'} size={'32'} maxLength={'32'} placeholder={'Username'}
                            pattern={'.{4,}'} value={this.state.register_username} onChange={(event) => {
