@@ -3,10 +3,32 @@ const mysql = require('./dbInterface.js');
 const crypto = require('crypto-js');
 const users = require('./users.js');
 
+// TODO make sure support can't do admin actions
+// TODO make sure admins can't do support actions
 // TODO recheck status codes
 // TODO maybe split this into multiple files
 const cors_header_name = 'Access-Control-Allow-Origin';
 const cors_header_value = '*';
+
+router.get('/support/messages', (req, res) => {
+    res.header(cors_header_name, cors_header_value);
+
+    if (! req.headers.authorization) {
+        res.status(400).json({'error': 'Token missing'}).end();
+        return;
+    }
+
+    const user_data = users.log_admin(req.headers.authorization.split(' ')[1]);
+
+    if (user_data === undefined) {
+        res.status(400).json({'error': 'Invalid token'}).end();
+        return;
+    }
+
+    mysql.call_proc('get_unanswered_messages', [], (result) => {
+        res.status(200).json(result).end();
+    })
+});
 
 router.post('/admin/register', (req, res) => {
     res.header(cors_header_name, cors_header_value);
@@ -57,6 +79,8 @@ router.post('/admin/register', (req, res) => {
 })
 
 router.get('/admin/user_submitted', (req, res) => {
+    res.header(cors_header_name, cors_header_value);
+
     if (! req.headers.authorization) {
         res.status(400).json({'error': 'Token missing'}).end();
         return;
@@ -75,6 +99,8 @@ router.get('/admin/user_submitted', (req, res) => {
 });
 
 router.post('/admin/user_submitted', (req, res) => {
+    res.header(cors_header_name, cors_header_value);
+
     if (! ('question_id') in req.body) {
         res.status(400).json({'error': 'Question ID missing'}).end();
         return;
@@ -119,6 +145,8 @@ router.post('/admin/user_submitted', (req, res) => {
 });
 
 router.get('/admin/reported', (req, res) => {
+    res.header(cors_header_name, cors_header_value);
+
     if (! req.headers.authorization) {
         res.status(400).json({'error': 'Token missing'}).end();
         return;
@@ -137,6 +165,8 @@ router.get('/admin/reported', (req, res) => {
 });
 
 router.post('/admin/reported', (req, res) => {
+    res.header(cors_header_name, cors_header_value);
+
     if (! ('question_id' in req.body)) {
         res.status(400).json({'error': 'Question ID missing'}).end();
         return;
