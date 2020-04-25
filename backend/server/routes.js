@@ -118,6 +118,75 @@ router.post('/admin/user_submitted', (req, res) => {
     }
 });
 
+router.get('/admin/reported', (req, res) => {
+    if (! req.headers.authorization) {
+        res.status(400).json({'error': 'Token missing'}).end();
+        return;
+    }
+
+    const user_data = users.log_admin(req.headers.authorization.split(' ')[1]);
+
+    if (user_data === undefined) {
+        res.status(400).json({'error': 'Invalid token'}).end();
+        return;
+    }
+
+    mysql.call_proc('get_questions_reported_by_users', [], (result) => {
+        res.status(200).json(result).end();
+    });
+});
+
+router.post('/admin/reported', (req, res) => {
+    if (! ('question_id' in req.body)) {
+        res.status(400).json({'error': 'Question ID missing'}).end();
+        return;
+    }
+
+    if (! ('action' in req.body)) {
+        res.status(400).json({'error': 'Action missing'}).end();
+        return;
+    }
+
+    if (! ('user_id' in req.body)) {
+        res.status(400).json({'error': 'User ID missing'}).end();
+        return;
+    }
+
+    if (! req.headers.authorization) {
+        res.status(400).json({'error': 'Token missing'}).end();
+        return;
+    }
+
+    const user_data = users.log_admin(req.headers.authorization.split(' ')[1]);
+
+    if (user_data === undefined) {
+        res.status(400).json({'error': 'Invalid token'}).end();
+        return;
+    }
+
+    switch(req.body.action) {
+        case '1':
+            mysql.call_proc('approve_question_report', [req.body.question_id], () => {
+                res.status(200).end();
+            });
+            break;
+        case '2':
+            mysql.call_proc('strike_question_report_author', [req.body.question_id, req.body.user_id],
+                () => {
+                res.status(200).end();
+            });
+            break;
+        case '3':
+            mysql.call_proc('delete_question_report', [req.body.question_id, req.body.user_id],
+                () => {
+                res.status(200).end();
+            });
+            break;
+        default:
+            res.status(400).json({'error': 'Invalid action'}).end();
+    }
+});
+
 router.post('/login', (req, res) => {
     res.header(cors_header_name, cors_header_value);
 
