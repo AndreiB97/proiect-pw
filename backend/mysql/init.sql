@@ -7,8 +7,7 @@ USE db;
 CREATE TABLE QUESTION_POOL (
     QuestionID integer not null primary key auto_increment,
     Answer1 varchar(128) not null,
-    Answer2 varchar(128) not null,
-    Flagged_offensive integer default 0
+    Answer2 varchar(128) not null
 );
 
 CREATE TABLE USERS (
@@ -26,8 +25,8 @@ CREATE TABLE VIEWED_QUESTIONS (
     Score integer default 0,
     Reported integer default 0,
 
-    FOREIGN KEY (UserID) REFERENCES USERS(UserID),
-    FOREIGN KEY (QuestionID) REFERENCES QUESTION_POOL(QuestionID)
+    FOREIGN KEY (UserID) REFERENCES USERS(UserID) ON DELETE CASCADE,
+    FOREIGN KEY (QuestionID) REFERENCES QUESTION_POOL(QuestionID) ON DELETE CASCADE
 );
 
 CREATE TABLE USER_SUBMITTED_QUESTIONS (
@@ -36,7 +35,7 @@ CREATE TABLE USER_SUBMITTED_QUESTIONS (
     Answer1 varchar(128) not null,
     Answer2 varchar(128) not null,
 
-    FOREIGN KEY (UserID) REFERENCES USERS(UserID)
+    FOREIGN KEY (UserID) REFERENCES USERS(UserID) ON DELETE CASCADE
 );
 
 CREATE TABLE ADMINS (
@@ -54,8 +53,8 @@ CREATE TABLE MESSAGES (
     Response varchar(512),
     Flagged_important integer default 0,
 
-    FOREIGN KEY (UserID) REFERENCES USERS(UserID),
-    FOREIGN KEY (AdminID) REFERENCES ADMINS(AdminID)
+    FOREIGN KEY (UserID) REFERENCES USERS(UserID) ON DELETE CASCADE,
+    FOREIGN KEY (AdminID) REFERENCES ADMINS(AdminID) ON DELETE CASCADE
 );
 
 INSERT INTO ADMINS(Username, Password, Role)
@@ -123,7 +122,6 @@ CREATE PROCEDURE get_random_question()
 BEGIN
     SELECT QuestionID, Answer1, Answer2
     FROM QUESTION_POOL
-    WHERE Flagged_offensive = 0
     ORDER BY RAND()
     LIMIT 1;
 END //
@@ -132,8 +130,7 @@ CREATE PROCEDURE get_random_question_for_user(IN user_id integer)
 BEGIN
     SELECT QuestionID, Answer1, Answer2
     FROM QUESTION_POOL
-    WHERE Flagged_offensive = 0 AND
-        QuestionID NOT IN (
+    WHERE QuestionID NOT IN (
             SELECT QuestionID
             FROM VIEWED_QUESTIONS
             WHERE UserID = user_id
@@ -142,10 +139,10 @@ BEGIN
     LIMIT 1;
 END //
 
-CREATE PROCEDURE add_user_submitted_question(IN id integer, IN ans1 varchar(128), IN ans2 varchar(128))
+CREATE PROCEDURE add_user_submitted_question(IN user_id integer, IN ans1 varchar(128), IN ans2 varchar(128))
 BEGIN
     INSERT INTO USER_SUBMITTED_QUESTIONS(UserID, Answer1, Answer2)
-    VALUES (id, ans1, ans2);
+    VALUES (user_id, ans1, ans2);
 END //
 
 CREATE PROCEDURE get_user_submitted_questions()
@@ -153,26 +150,6 @@ BEGIN
     SELECT q.QuestionID, u.Username, q.Answer1, q.Answer2
     FROM USER_SUBMITTED_QUESTIONS q, USERS u
     WHERE q.UserID = u.UserID;
-END //
-
-CREATE PROCEDURE flag_question(IN id integer, IN flag_value integer)
-BEGIN
-    UPDATE QUESTION_POOL
-    SET Flagged_offensive = flag_value
-    WHERE QuestionID = id;
-END //
-
-CREATE PROCEDURE get_question_pool()
-BEGIN
-    SELECT *
-    FROM QUESTION_POOL;
-END //
-
-CREATE PROCEDURE get_flagged_offensive_questions()
-BEGIN
-    SELECT *
-    FROM QUESTION_POOL
-    WHERE Flagged_offensive = 1;
 END //
 
 CREATE PROCEDURE delete_question(IN id integer)
@@ -198,11 +175,11 @@ BEGIN
     SELECT (
         SELECT COUNT(*)
         FROM VIEWED_QUESTIONS
-        WHERE selected_answer = 1 AND QuestionID = question_id
+        WHERE Selected_answer = 1 AND QuestionID = question_id
     ) AS Ans1Count, (
         SELECT COUNT(*)
         FROM VIEWED_QUESTIONS
-        WHERE selected_answer = 2  AND QuestionID = question_id
+        WHERE Selected_answer = 2  AND QuestionID = question_id
     ) AS Ans2Count;
 END //
 
@@ -239,6 +216,13 @@ BEGIN
     FROM MESSAGES;
 END //
 
+CREATE PROCEDURE get_unanswered_messages()
+BEGIN
+    SELECT *
+    FROM MESSAGES
+    WHERE Response IS NULL;
+END //
+
 CREATE PROCEDURE get_user_messages_no_response(IN id integer)
 BEGIN
     SELECT m.Message
@@ -251,13 +235,6 @@ BEGIN
     SELECT m.Message, a.Username, m.Response
     FROM MESSAGES m, ADMINS a
     WHERE m.AdminID = a.AdminID AND m.UserID = id;
-END //
-
-CREATE PROCEDURE get_message(IN message_id integer)
-BEGIN
-    SELECT *
-    FROM MESSAGES
-    WHERE MessageID = message_id;
 END //
 
 CREATE PROCEDURE respond_to_message(IN message_id integer, IN admin_id integer, IN response varchar(512))
@@ -308,9 +285,30 @@ END //
 
 CREATE PROCEDURE get_questions_reported_by_users()
 BEGIN
-    SELECT *
-    FROM QUESTION_POOL pool, VIEWED_QUESTIONS viewed
-    WHERE pool.QuestionID = viewed.QuestionID AND viewed.Reported = 1;
+    SELECT v.QuestionID, v.UserID, u.Username, p.Answer1, p.Answer2
+    FROM QUESTION_POOL p, VIEWED_QUESTIONS v, USERS u
+    WHERE p.QuestionID = v.QuestionID AND v.Reported = 1 AND u.UserID = v.UserID;
+END //
+
+CREATE PROCEDURE approve_question_report(IN question_id integer)
+BEGIN
+    CALL delete_question(question_id);
+END //
+
+CREATE PROCEDURE strike_question_report_author(IN question_id integer, IN user_id integer)
+BEGIN
+    UPDATE VIEWED_QUESTIONS
+    SET Reported = 0
+    WHERE QuestionID = question_id;
+
+    CALL strike_user(user_id);
+END //
+
+CREATE PROCEDURE delete_question_report(IN question_id integer, IN user_id integer)
+BEGIN
+    UPDATE VIEWED_QUESTIONS
+    SET Reported = 0
+    WHERE QuestionID = question_id AND UserID = user_id;
 END //
 
 CREATE PROCEDURE report_user_submitted_question_author(IN question_id integer)
@@ -342,6 +340,7 @@ END //
 
 CREATE PROCEDURE login_user(IN uname varchar(32), IN pword char(40))
 BEGIN
+    -- TODO change this
     SELECT *
     FROM USERS
     WHERE Username = uname AND Password = pword;
@@ -363,6 +362,7 @@ END //
 
 CREATE PROCEDURE login_admin(IN uname varchar(32), IN pword char(40))
 BEGIN
+    -- TODO change this
     SELECT *
     FROM ADMINS
     WHERE Username = uname AND Password = pword;
