@@ -2,8 +2,6 @@ import React from "react";
 import './VotePage.scss';
 import axios from "axios";
 
-// TODO axios catch
-
 class VotePage extends React.Component {
     constructor(props) {
         super(props);
@@ -70,7 +68,13 @@ class VotePage extends React.Component {
                 this.state.questions[this.state.current_question_index].stats = result.data.stats[0];
 
                 this.forceUpdate();
-            })
+            }).catch((error) => {
+                if ('response' in error) {
+                    console.log(error.response);
+                } else {
+                    console.log(error);
+                }
+            });
         }
     }
 
@@ -101,7 +105,13 @@ class VotePage extends React.Component {
             })
 
             this.forceUpdate();
-        })
+        }).catch((error) => {
+            if ('response' in error) {
+                console.log(error.response);
+            } else {
+                console.log(error);
+            }
+        });
     }
 
     onPrevClick() {
@@ -180,6 +190,12 @@ class VotePage extends React.Component {
             params,
             options
         ).catch((error) => {
+            if ('response' in error) {
+                console.log(error.response);
+            } else {
+                console.log(error);
+            }
+        }).catch((error) => {
             if ('response' in error) {
                 console.log(error.response);
             } else {
