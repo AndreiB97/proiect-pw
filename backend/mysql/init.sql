@@ -344,8 +344,7 @@ END //
 
 CREATE PROCEDURE login_user(IN uname varchar(32), IN pword char(40))
 BEGIN
-    -- TODO change this
-    SELECT *
+    SELECT UserID, Username, Password, Email
     FROM USERS
     WHERE Username = uname AND Password = pword;
 END //
@@ -366,8 +365,7 @@ END //
 
 CREATE PROCEDURE login_admin(IN uname varchar(32), IN pword char(40))
 BEGIN
-    -- TODO change this
-    SELECT *
+    SELECT AdminID, Username, Password, Role
     FROM ADMINS
     WHERE Username = uname AND Password = pword;
 END //
