@@ -38,7 +38,7 @@ class FAQPage extends React.Component {
                 {
                     this.state.faq.map((item) => {
                         return (
-                            <CollapsibleItem header={item.Message.substr(0, 32)  + '...'}
+                            <CollapsibleItem header={item.Message}
                                              content={item.Message} response={item.Response}/>
                             );
                     })

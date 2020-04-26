@@ -3,8 +3,6 @@ import './ContactPage.scss'
 import axios from "axios";
 import CollapsibleItem from "./CollapsibleItem";
 
-// TODO change collapsible header ...
-
 class ContactPage extends React.Component {
     constructor(props) {
         super(props);
@@ -98,7 +96,7 @@ class ContactPage extends React.Component {
                                         <h1>Answered messages:</h1>
                                         {
                                             this.state.with_response_messages.map((message) => {
-                                                return <CollapsibleItem header={message.Message.substr(0, 32) + '...'}
+                                                return <CollapsibleItem header={message.Message}
                                                                         content={message.Message} response={message.Response}
                                                                         admin_name={message.Username}/>
                                             })
@@ -112,7 +110,7 @@ class ContactPage extends React.Component {
                                         <h1>Not yet answered messages:</h1>
                                         {
                                             this.state.no_response_messages.map((message) => {
-                                                return <CollapsibleItem header={message.Message.substr(0, 32)  + '...'}
+                                                return <CollapsibleItem header={message.Message}
                                                                         content={message.Message}/>
                                             })
                                         }

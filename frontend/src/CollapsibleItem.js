@@ -31,7 +31,13 @@ class CollapsibleItem extends React.Component {
     render() {
         return (
             <div>
-                <button className={'Collapsible'} onClick={this.toggleCollapsible}>{this.props.header}</button>
+                <button className={'Collapsible'} onClick={this.toggleCollapsible}>
+                    {
+                        this.props.header.length > 32 ?
+                            this.props.header.substr(0, 32) + '...' :
+                            this.props.header
+                    }
+                </button>
                 <div className={this.state.content_className}>
                     <p>
                         {this.props.content}

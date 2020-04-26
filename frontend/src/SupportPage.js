@@ -142,7 +142,7 @@ class SupportPage extends React.Component {
     displayMessage(message, index) {
         message['text_value'] = '';
         return (
-            <CollapsibleItem header={message.Message.substr(0, 32) + '...'}
+            <CollapsibleItem header={message.Message}
                              content={
                                  <div className={'MessageContainer'}>
                                      <p><span className={'Highlight'}>{message.Username}</span> says:</p>
