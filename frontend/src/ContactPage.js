@@ -41,25 +41,37 @@ class ContactPage extends React.Component {
         ).then(() => {
             this.setState({'text_value': ''});
             this.getMessages();
+        }).catch((error) => {
+            if ('response' in error) {
+                console.log(error.response);
+            } else {
+                console.log(error);
+            }
         });
     }
 
-    async getMessages() {
-        const result = await axios.get(
+    getMessages() {
+        axios.get(
             'http://localhost:80/contact',
             {
                 'headers': {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`
                 }
             }
-        )
+        ).then((result) => {
+            this.setState({
+                'no_response_messages': result.data.no_response_messages,
+                'with_response_messages': result.data.with_response_messages
+            });
 
-        await this.setState({
-            'no_response_messages': result.data.no_response_messages,
-            'with_response_messages': result.data.with_response_messages
-        });
-
-        this.forceUpdate();
+            this.forceUpdate();
+        }).catch((error) => {
+            if ('response' in error) {
+                console.log(error.response);
+            } else {
+                console.log(error);
+            }
+        })
     }
 
     render() {

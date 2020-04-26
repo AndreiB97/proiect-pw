@@ -13,25 +13,36 @@ class AdminReviewUserSubmitted extends React.Component {
         };
 
         this.onActionButtonClick = this.onActionButtonClick.bind(this);
-        this.getSubmittedQuestions = this.getSubmittedQuestions.bind(this);
+        this.getSubmittedQuestionsTable = this.getSubmittedQuestionsTable.bind(this);
         this.getSubmittedQuestionsNavigation = this.getSubmittedQuestionsNavigation.bind(this);
+        this.getUserSubmitted = this.getUserSubmitted.bind(this);
+
+        this.getUserSubmitted();
     }
 
-    async componentDidMount() {
+    getUserSubmitted() {
         const options = {
             'headers': {
                 'Authorization': `Bearer ${localStorage.getItem('token')}`
             }
         };
 
-        const result = await axios.get(
+        axios.get(
             'http://localhost:80/admin/user_submitted',
             options
-        );
+        ).then((result) => {
+            this.setState({
+                'user_submitted': result.data
+            });
 
-        this.state.user_submitted = result.data;
-
-        this.forceUpdate();
+            this.forceUpdate();
+        }).catch((error) => {
+            if ('response' in error) {
+                console.log(error.response);
+            } else {
+                console.log(error);
+            }
+        });
     }
 
     onActionButtonClick(question_id, action, index) {
@@ -51,21 +62,17 @@ class AdminReviewUserSubmitted extends React.Component {
             params,
             options
         ).then(() => {
-            this.state.user_submitted.splice(index, 1);
-            console.log('here');
-            this.forceUpdate();
+            this.getUserSubmitted();
         }).catch((error) => {
             if ('response' in error) {
                 console.log(error.response);
-                console.log(error);
             } else {
-                this.forceUpdate();
                 console.log(error);
             }
         })
     }
 
-    getSubmittedQuestions() {
+    getSubmittedQuestionsTable() {
         return (
             <table cellSpacing={'0'} cellPadding={'0'}>
                 <tr className={'TableHeader'}>
@@ -175,7 +182,7 @@ class AdminReviewUserSubmitted extends React.Component {
             <div className={'AdminReviewUserSubmitted'}>
                 <h1 className={'Highlight'}>Review user submitted questions</h1>
                 {
-                    this.getSubmittedQuestions()
+                    this.getSubmittedQuestionsTable()
                 }
                 {
                     this.getSubmittedQuestionsNavigation()

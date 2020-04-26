@@ -10,15 +10,25 @@ class FAQPage extends React.Component {
         this.state = {
             'faq': []
         };
+
+        this.getFAQ = this.getFAQ.bind(this);
+
+        this.getFAQ()
     }
 
-    async componentDidMount() {
-        const result = await axios.get(
+    getFAQ() {
+        axios.get(
             'http://localhost:80/faq'
-        );
-
-        this.state.faq = result.data.faq;
-        this.forceUpdate();
+        ).then((result) => {
+            this.setState({'faq': result.data.faq});
+            this.forceUpdate();
+        }).catch((error) => {
+            if ('response' in error) {
+                console.log(error.response);
+            } else {
+                console.log(error);
+            }
+        });
     }
 
     render() {

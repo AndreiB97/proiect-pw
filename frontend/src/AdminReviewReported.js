@@ -15,22 +15,33 @@ class AdminReviewReported extends React.Component {
         this.onActionButtonClick = this.onActionButtonClick.bind(this);
         this.getSubmittedQuestions = this.getSubmittedQuestions.bind(this);
         this.getReportedQuestionsNavigation = this.getReportedQuestionsNavigation.bind(this);
+        this.getReported = this.getReported.bind(this);
+
+        this.getReported();
     }
 
-    async componentDidMount() {
+    getReported() {
         const options = {
             'headers': {
                 'Authorization': `Bearer ${localStorage.getItem('token')}`
             }
         };
 
-        const result = await axios.get(
+        axios.get(
             'http://localhost:80/admin/reported',
             options
-        );
+        ).then((result) => {
+            this.setState({
+                'reported': result.data
+            });
 
-        this.setState({
-            'reported': result.data
+            this.forceUpdate();
+        }).catch((error) => {
+            if ('response' in error) {
+                console.log(error.response);
+            } else {
+                console.log(error);
+            }
         });
     }
 
@@ -52,9 +63,7 @@ class AdminReviewReported extends React.Component {
             params,
             options
         ).then(() => {
-            this.state.reported.splice(index, 1);
-
-            this.forceUpdate();
+            this.getReported();
         }).catch((error) => {
             if ('response' in error) {
                 console.log(error.response);

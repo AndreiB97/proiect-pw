@@ -7,8 +7,7 @@ class VotePage extends React.Component {
         super(props);
 
         this.state = {
-            'questions': [],
-            'current_question_index': 0
+            'questions': []
         };
 
         this.getQuestion = this.getQuestion.bind(this);
@@ -25,9 +24,11 @@ class VotePage extends React.Component {
         this.getUserActionsUI = this.getUserActionsUI.bind(this);
         this.getSubmitForm = this.getSubmitForm.bind(this);
         this.getQuestionActions = this.getQuestionActions.bind(this);
+
+        this.getQuestion();
     }
 
-    async pickAnswer(answer) {
+    pickAnswer(answer) {
         if (this.state.questions[this.state.current_question_index].voted === 0) {
             const params = new URLSearchParams();
 
@@ -42,26 +43,20 @@ class VotePage extends React.Component {
                 }
             }
 
-            const result = await axios.post(
+            axios.post(
                 'http://localhost:80/questions',
                 params,
                 options
-            )
+            ).then((result) => {
+                this.state.questions[this.state.current_question_index].voted = answer;
+                this.state.questions[this.state.current_question_index].stats = result.data.stats[0];
 
-            this.state.questions[this.state.current_question_index].voted = answer;
-            this.state.questions[this.state.current_question_index].stats = result.data.stats[0];
-
-            this.forceUpdate();
+                this.forceUpdate();
+            })
         }
     }
 
-    async componentDidMount() {
-        await this.getQuestion();
-
-        this.forceUpdate();
-    }
-
-    async getQuestion() {
+    getQuestion() {
         let options = {};
 
         if (localStorage.getItem('token') !== null) {
@@ -70,36 +65,43 @@ class VotePage extends React.Component {
             }
         }
 
-        const result = await axios.get(
+        axios.get(
             'http://localhost:80/questions',
             options
-        )
+        ).then((result) => {
+            result.data.question[0]['voted'] = 0;
+            result.data.question[0]['like'] = 'like';
+            result.data.question[0]['dislike'] = 'dislike';
+            result.data.question[0]['reported'] = false;
 
-        result.data.question[0]['voted'] = 0;
-        result.data.question[0]['like'] = 'like';
-        result.data.question[0]['dislike'] = 'dislike';
-        result.data.question[0]['reported'] = false;
+            this.state.questions.push(result.data.question[0]);
 
-        this.state.questions.push(result.data.question[0]);
+            this.setState({
+                'current_question_index': this.state.current_question_index === undefined ?
+                    0 :
+                    this.state.current_question_index + 1
+            })
+
+            this.forceUpdate();
+        })
     }
 
     onPrevClick() {
         if (this.state.current_question_index !== undefined &&
             this.state.current_question_index > 0) {
             this.setState({'current_question_index': this.state.current_question_index - 1});
-
             this.forceUpdate();
         }
     }
 
-    async onNextClick() {
+    onNextClick() {
         if (this.state.current_question_index + 1 === this.state.questions.length) {
-            await this.getQuestion();
+            this.getQuestion();
+        } else {
+            this.setState({'current_question_index': this.state.current_question_index + 1});
+
+            this.forceUpdate();
         }
-
-        await this.setState({'current_question_index': this.state.current_question_index + 1});
-
-        this.forceUpdate();
     }
 
     getButtonText(button) {
@@ -159,7 +161,13 @@ class VotePage extends React.Component {
             'http://localhost:80/score',
             params,
             options
-        );
+        ).catch((error) => {
+            if ('response' in error) {
+                console.log(error.response);
+            } else {
+                console.log(error);
+            }
+        });
     }
 
     onLikeClick() {
@@ -199,11 +207,17 @@ class VotePage extends React.Component {
             'http://localhost:80/report',
             params,
             options
-        );
+        ).then(() => {
+            this.state.questions[this.state.current_question_index].reported = true;
 
-        this.state.questions[this.state.current_question_index].reported = true;
-
-        this.forceUpdate();
+            this.forceUpdate();
+        }).catch((error) => {
+            if ('response' in error) {
+                console.log(error.response);
+            } else {
+                console.log(error);
+            }
+        });
     }
 
     onSend() {
@@ -226,11 +240,17 @@ class VotePage extends React.Component {
             'http://localhost:80/questions',
             params,
             options
-        );
-
-        this.setState({
-            'blue': '',
-            'red': ''
+        ).then(() => {
+            this.setState({
+                'blue': '',
+                'red': ''
+            });
+        }).catch((error) => {
+            if ('response' in error) {
+                console.log(error.response);
+            } else {
+                console.log(error);
+            }
         });
     }
 

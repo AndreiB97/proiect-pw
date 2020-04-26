@@ -2,6 +2,8 @@ import React from "react";
 import axios from 'axios';
 import './Account.scss';
 
+// TODO clear register fields after send
+
 class Account extends React.Component {
     constructor(props) {
         super(props);
@@ -19,54 +21,62 @@ class Account extends React.Component {
         };
     }
 
-    async onLogin() {
+    onLogin() {
         let params = new URLSearchParams();
 
         params.append('username', this.state.login_username);
         params.append('password', this.state.login_password);
 
-        const response = await axios.post(
+        axios.post(
             'http://localhost:80/login',
             params
-        );
-
-        if (response.data && 'error' in response.data) {
-            this.setState({'login_message': response.data.error});
-        } else {
-            if ('role' in response.data) {
-                localStorage.setItem('role', response.data.role);
+        ).then((result) => {
+            if ('role' in result.data) {
+                localStorage.setItem('role', result.data.role);
             }
 
             localStorage.setItem('username', this.state.login_username);
-            localStorage.setItem('token', response.data.token);
-        }
+            localStorage.setItem('token', result.data.token);
 
-        this.props.refresh();
+            this.props.refresh();
+        }).catch((error) => {
+            if ('response' in error) {
+                console.log(error.response);
+
+                this.setState({'login_message': error.response.data.error});
+
+                this.props.refresh();
+            } else {
+                console.log(error);
+            }
+        });
     };
 
-    async onRegister() {
+    onRegister() {
         let params = new URLSearchParams();
 
         params.append('email', this.state.register_email);
         params.append('username', this.state.register_username);
         params.append('password', this.state.register_password);
 
-        const response = await axios.post(
+        axios.post(
             'http://localhost:80/register',
             params
-        );
-
-        if (response.data !== '') {
-            if ('error' in response.data) {
-                this.setState({'register_message': response.data.error});
-            } else {
-                console.log(response.data);
-            }
-        } else {
+        ).then((result) => {
             this.setState({'register_message': 'Registration complete'});
-        }
 
-        this.props.refresh();
+            this.props.refresh();
+        }).catch((error) => {
+            if ('response' in error) {
+                console.log(error.response);
+
+                this.setState({'register_message': error.response.data.error});
+
+                this.props.refresh();
+            } else {
+                console.log(error);
+            }
+        });
     };
 
     onLogout() {
