@@ -7,8 +7,6 @@ const mailer = require('./mailer.js');
 const cors_header_name = 'Access-Control-Allow-Origin';
 const cors_header_value = '*';
 
-// TODO make sure admins can't do support actions
-
 router.get('/messages', (req, res) => {
     res.header(cors_header_name, cors_header_value);
 
@@ -21,6 +19,11 @@ router.get('/messages', (req, res) => {
 
     if (user_data === undefined) {
         res.status(400).json({'error': 'Invalid token'}).end();
+        return;
+    }
+
+    if (user_data.Role !== 2) {
+        res.status(400).json({'error': 'Wrong account role'}).end();
         return;
     }
 
@@ -46,6 +49,11 @@ router.post('/messages', (req, res) => {
 
     if (user_data === undefined) {
         res.status(400).json({'error': 'Invalid token'}).end();
+        return;
+    }
+
+    if (user_data.Role !== 2) {
+        res.status(400).json({'error': 'Wrong account role'}).end();
         return;
     }
 
