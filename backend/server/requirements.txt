@@ -1,1 +1,1 @@
-express cors mysql crypto-js
+express cors mysql crypto-js nodemailer
