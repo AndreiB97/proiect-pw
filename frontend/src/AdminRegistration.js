@@ -24,8 +24,6 @@ class AdminRegistration extends React.Component {
 
         const params = new URLSearchParams();
 
-        console.log(this.state);
-
         params.append('username', this.state.register_username);
         params.append('password', this.state.register_password);
         params.append('type', this.state.register_type);

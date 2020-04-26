@@ -10,7 +10,11 @@ import SupportPage from "./SupportPage";
 
 // TODO gdpr form
 // TODO remove useless class names
-// TODO are async axios request necessary?
+// TODO user name
+// TODO login with email or username
+// TODO display error messages
+// TODO get rid of splices
+// TODO get rid of componentDidMount
 
 class App extends React.Component {
     constructor(props) {
