@@ -1,5 +1,3 @@
--- TODO add some faq messages
-
 CREATE DATABASE db;
 
 USE db;
@@ -66,7 +64,45 @@ INSERT INTO ADMINS(Username, Password, Role)
 VALUES ('support', SHA1('root'), 2);
 
 INSERT INTO USERS(Username, Password, Email)
-VALUES ('aaaa', SHA1('aaaaaaaa'), 'aaaa@aaaa.a');
+VALUES ('curiosity', SHA1('aaaaaaaa'), 'aaaa@aaaa.a');
+
+INSERT INTO MESSAGES(UserID, Message, AdminID, Response, Flagged_important)
+VALUES
+(
+    1,
+    'What is Would You Rather?',
+    2,
+    '“Would You Rather” is a game where you are presented with a question with two answers. Once you pick an answer, you will be able to see how many people picked that answer. All questions follow a very simple format, they start with “Would you rather” and then provide two different options. E.g. “Would you rather go to Hogwarts or go to Mordor?”.',
+    1
+),
+(
+    1,
+    'Can I submit my own questions?',
+    2,
+    "Yes, you can submit your own questions. First you must create an account and log in. Once you are logged in you will be able to see a form on the homepage. Fill in your answers and hit send, then an admin will review your submission. If the submission doesn't include any inappropriate content, then it will most likely get approved and added to the question pool of the game.",
+    1
+),
+(
+    1,
+    'Do you offer any tech support?',
+    2,
+    "Yes, you can contact our tech support via the contact page, however you must be logged in in order to send messages. Our tech support team will reviews all messages and when your message gets answered you will receive an e-mail from us.",
+    1
+),
+(
+    1,
+    'Can I get banned?',
+    2,
+    "Yes, you can get banned. If you send inappropriate messages via the contact page, submit questions with inappropriate content or falsely report questions, then you receive a strike from an administrator. After 3 strikes, your account will be banned.",
+    1
+),
+(
+    1,
+    'Can I play the game without using my browser?',
+    2,
+    "No, you cannot. This game was originally intended as a Python application, but it was later remade into a website. You can find the code for the old application here: https://github.com/AndreiB97/idp . However, this website's code is public and can be viewed here: https://github.com/AndreiB97/proiect-pw . As such, it is possible for you to write your own application to interface with our servers.",
+    1
+);
 
 INSERT INTO QUESTION_POOL(Answer1, Answer2)
 VALUES
