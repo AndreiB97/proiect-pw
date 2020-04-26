@@ -7,7 +7,6 @@ const users = require('./users.js');
 // TODO make sure admins can't do support actions
 // TODO recheck status codes
 // TODO maybe split this into multiple files
-// TODO check for token before any other checks
 
 const cors_header_name = 'Access-Control-Allow-Origin';
 const cors_header_value = '*';
@@ -20,7 +19,7 @@ router.get('/support/messages', (req, res) => {
         return;
     }
 
-    const user_data = users.log_admin(req.headers.authorization.split(' ')[1]);
+    const user_data = users.get_admin(req.headers.authorization.split(' ')[1]);
 
     if (user_data === undefined) {
         res.status(400).json({'error': 'Invalid token'}).end();
@@ -45,7 +44,7 @@ router.post('/support/messages', (req, res) => {
         return;
     }
 
-    const user_data = users.log_admin(req.headers.authorization.split(' ')[1]);
+    const user_data = users.get_admin(req.headers.authorization.split(' ')[1]);
 
     if (user_data === undefined) {
         res.status(400).json({'error': 'Invalid token'}).end();
@@ -72,6 +71,18 @@ router.post('/support/messages', (req, res) => {
 router.post('/admin/register', (req, res) => {
     res.header(cors_header_name, cors_header_value);
 
+    if (! req.headers.authorization) {
+        res.status(400).json({'error': 'Token missing'}).end();
+        return;
+    }
+
+    const user_data = users.get_admin(req.headers.authorization.split(' ')[1]);
+
+    if (user_data === undefined) {
+        res.status(400).json({'error': 'Invalid token'}).end();
+        return;
+    }
+
     if (! ('username' in req.body)) {
         res.status(400).json({'error': 'Username missing'}).end();
         return;
@@ -89,18 +100,6 @@ router.post('/admin/register', (req, res) => {
 
     if (req.body.type !== '1' && req.body.type !== '2') {
         res.status(400).json({'error': 'Invalid account type'}).end();
-        return;
-    }
-
-    if (! req.headers.authorization) {
-        res.status(400).json({'error': 'Token missing'}).end();
-        return;
-    }
-
-    const user_data = users.log_admin(req.headers.authorization.split(' ')[1]);
-
-    if (user_data === undefined) {
-        res.status(400).json({'error': 'Invalid token'}).end();
         return;
     }
 
@@ -125,7 +124,7 @@ router.get('/admin/user_submitted', (req, res) => {
         return;
     }
 
-    const user_data = users.log_admin(req.headers.authorization.split(' ')[1]);
+    const user_data = users.get_admin(req.headers.authorization.split(' ')[1]);
 
     if (user_data === undefined) {
         res.status(400).json({'error': 'Invalid token'}).end();
@@ -140,6 +139,18 @@ router.get('/admin/user_submitted', (req, res) => {
 router.post('/admin/user_submitted', (req, res) => {
     res.header(cors_header_name, cors_header_value);
 
+    if (! req.headers.authorization) {
+        res.status(400).json({'error': 'Token missing'}).end();
+        return;
+    }
+
+    const user_data = users.get_admin(req.headers.authorization.split(' ')[1]);
+
+    if (user_data === undefined) {
+        res.status(400).json({'error': 'Invalid token'}).end();
+        return;
+    }
+
     if (! ('question_id') in req.body) {
         res.status(400).json({'error': 'Question ID missing'}).end();
         return;
@@ -147,18 +158,6 @@ router.post('/admin/user_submitted', (req, res) => {
 
     if (! ('action' in req.body)) {
         res.status(400).json({'error': 'Action missing'}).end();
-        return;
-    }
-
-    if (! req.headers.authorization) {
-        res.status(400).json({'error': 'Token missing'}).end();
-        return;
-    }
-
-    const user_data = users.log_admin(req.headers.authorization.split(' ')[1]);
-
-    if (user_data === undefined) {
-        res.status(400).json({'error': 'Invalid token'}).end();
         return;
     }
 
@@ -191,7 +190,7 @@ router.get('/admin/reported', (req, res) => {
         return;
     }
 
-    const user_data = users.log_admin(req.headers.authorization.split(' ')[1]);
+    const user_data = users.get_admin(req.headers.authorization.split(' ')[1]);
 
     if (user_data === undefined) {
         res.status(400).json({'error': 'Invalid token'}).end();
@@ -206,6 +205,18 @@ router.get('/admin/reported', (req, res) => {
 router.post('/admin/reported', (req, res) => {
     res.header(cors_header_name, cors_header_value);
 
+    if (! req.headers.authorization) {
+        res.status(400).json({'error': 'Token missing'}).end();
+        return;
+    }
+
+    const user_data = users.get_admin(req.headers.authorization.split(' ')[1]);
+
+    if (user_data === undefined) {
+        res.status(400).json({'error': 'Invalid token'}).end();
+        return;
+    }
+
     if (! ('question_id' in req.body)) {
         res.status(400).json({'error': 'Question ID missing'}).end();
         return;
@@ -218,18 +229,6 @@ router.post('/admin/reported', (req, res) => {
 
     if (! ('user_id' in req.body)) {
         res.status(400).json({'error': 'User ID missing'}).end();
-        return;
-    }
-
-    if (! req.headers.authorization) {
-        res.status(400).json({'error': 'Token missing'}).end();
-        return;
-    }
-
-    const user_data = users.log_admin(req.headers.authorization.split(' ')[1]);
-
-    if (user_data === undefined) {
-        res.status(400).json({'error': 'Invalid token'}).end();
         return;
     }
 
@@ -273,7 +272,6 @@ router.post('/login', (req, res) => {
             req.body.username,
             crypto.SHA1(req.body.password).toString()
         ], (result) => {
-        // reasons to hate javascript: callbacks
         if (result.length === 0) {
             mysql.call_proc('login_admin', [
                     req.body.username,
@@ -384,10 +382,32 @@ router.get('/questions', (req, res) => {
 router.put('/report', (req, res) => {
     res.header(cors_header_name, cors_header_value);
 
+    if (! req.headers.authorization) {
+        res.status(400).json({'error': 'Token missing'}).end();
+        return;
+    }
+
+    const token = req.headers.authorization.split(' ')[1];
+    const user_data = users.get_user(token);
+
+
+    if (user_data === undefined) {
+        res.status(400).json({'error': 'Invalid token'}).end();
+        return;
+    }
+
     if (! ('question_id' in req.body)) {
         res.status(400).json({'error': 'Question ID missing'}).end();
         return;
     }
+
+    mysql.call_proc('report_question', [user_data.UserID, req.body.question_id, 1], () => {
+        res.status(200).end();
+    });
+})
+
+router.post('/score', (req, res) => {
+    res.header(cors_header_name, cors_header_value);
 
     if (! req.headers.authorization) {
         res.status(400).json({'error': 'Token missing'}).end();
@@ -397,16 +417,9 @@ router.put('/report', (req, res) => {
     const token = req.headers.authorization.split(' ')[1];
     const user_data = users.get_user(token);
 
-    if (user_data !== undefined) {
-        mysql.call_proc('report_question', [user_data.UserID, req.body.question_id, 1], () => {});
-        res.status(200).end();
-    } else {
+    if (user_data === undefined) {
         res.status(400).json({'error': 'Invalid token'}).end();
     }
-})
-
-router.post('/score', (req, res) => {
-    res.header(cors_header_name, cors_header_value);
 
     if (! ('score' in req.body)) {
         res.status(400).json({'error': 'Score missing'}).end();
@@ -426,21 +439,9 @@ router.post('/score', (req, res) => {
         return;
     }
 
-    if (! req.headers.authorization) {
-        res.status(400).json({'error': 'Token missing'}).end();
-        return;
-    }
-
-    const token = req.headers.authorization.split(' ')[1];
-
-    const user_data = users.get_user(token);
-
-    if (user_data !== undefined) {
-        mysql.call_proc('score_question', [user_data.UserID, req.body.question_id, score], () => {});
+    mysql.call_proc('score_question', [user_data.UserID, req.body.question_id, score], () => {
         res.status(200).end();
-    } else {
-        res.status(400).json({'error': 'Invalid token'}).end();
-    }
+    });
 });
 
 router.post('/questions', (req, res) => {
@@ -484,6 +485,19 @@ router.post('/questions', (req, res) => {
 router.put('/questions', (req, res) => {
     res.header(cors_header_name, cors_header_value);
 
+    if (! req.headers.authorization) {
+        res.status(400).json({'error': 'Token missing'}).end();
+        return;
+    }
+
+    const token = req.headers.authorization.split(' ')[1];
+    const user_data = users.get_user(token);
+
+    if (user_data === undefined) {
+        res.status(400).json({'error': 'Invalid token'}).end();
+        return;
+    }
+
     if (! ('blue' in req.body)) {
         res.status(400).json({'error': 'Blue answer missing'}).end();
         return;
@@ -494,21 +508,10 @@ router.put('/questions', (req, res) => {
         return;
     }
 
-    if (! req.headers.authorization) {
-        res.status(400).json({'error': 'Token missing'}).end();
-        return;
-    }
-
-    const token = req.headers.authorization.split(' ')[1];
-    const user_data = users.get_user(token);
-
-    if (user_data !== undefined) {
-        mysql.call_proc('add_user_submitted_question', [user_data.UserID, req.body.blue, req.body.red],
-            () => {});
+    mysql.call_proc('add_user_submitted_question', [user_data.UserID, req.body.blue, req.body.red],
+        () => {
         res.status(200).end();
-    } else {
-        res.status(400).json({'error': 'Invalid token missing'}).end();
-    }
+    });
 });
 
 router.get('/faq', (req, res) => {
@@ -525,25 +528,27 @@ router.put('/contact', (req, res) => {
     // TODO email when answered
     res.header(cors_header_name, cors_header_value);
 
-    if (! ('message' in req.body)) {
-        res.status(400).json({'error': 'Message missing'}).end();
-        return;
-    }
-
     if (! req.headers.authorization) {
         res.status(400).json({'error': 'Token missing'}).end();
         return;
     }
 
     const token = req.headers.authorization.split(' ')[1];
-
     const user_data = users.get_user(token);
 
-    if (user_data !== undefined) {
-        mysql.call_proc('add_message', [user_data.UserID, req.body.message], () => {});
+    if (user_data === undefined) {
+        res.status(400).json({'error': 'Invalid token'}).end();
+        return;
     }
 
-    res.status(200).end();
+    if (! ('message' in req.body)) {
+        res.status(400).json({'error': 'Message missing'}).end();
+        return;
+    }
+
+    mysql.call_proc('add_message', [user_data.UserID, req.body.message], () => {
+        res.status(200).end();
+    });
 });
 
 router.get('/contact', (req, res) => {
@@ -558,20 +563,21 @@ router.get('/contact', (req, res) => {
 
     const user_data = users.get_user(token);
 
-    if (user_data !== undefined) {
-        mysql.call_proc('get_user_messages_no_response', [user_data.UserID],
-            (no_response_result) => {
+    if (user_data === undefined) {
+        res.status(200).json({'error': 'Invalid token'}).end();
+        return;
+    }
+
+    mysql.call_proc('get_user_messages_no_response', [user_data.UserID],
+        (no_response_result) => {
             mysql.call_proc('get_user_messages_with_response', [user_data.UserID],
                 (with_response_result) => {
-                res.status(200).json({
-                    'no_response_messages': no_response_result,
-                    'with_response_messages': with_response_result
-                }).end();
+                    res.status(200).json({
+                        'no_response_messages': no_response_result,
+                        'with_response_messages': with_response_result
+                    }).end();
                 })
         });
-    } else {
-        res.status(200).json({'error': 'Not logged in'}).end();
-    }
 });
 
 module.exports = router;
