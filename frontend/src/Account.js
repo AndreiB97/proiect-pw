@@ -71,7 +71,7 @@ class Account extends React.Component {
             params
         ).then((result) => {
             this.setState({
-                'register_message': 'Registration complete',
+                'register_message': 'Confirmation email sent',
                 'register_username': '',
                 'register_email': '',
                 'register_password': ''
