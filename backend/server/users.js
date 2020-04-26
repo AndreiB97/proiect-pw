@@ -13,7 +13,8 @@ function log_user(user_data) {
 
     logged_users[token] = {
         'UserID': user_data.UserID,
-        'Email': user_data.Email
+        'Email': user_data.Email,
+        'Username': user_data.Username
     };
 
     return token;
@@ -27,7 +28,8 @@ function log_admin(user_data) {
 
     logged_admins[token] = {
         'AdminID': user_data.AdminID,
-        'Role': user_data.Role
+        'Role': user_data.Role,
+        'Username': user_data.Username
     };
 
     return token;
