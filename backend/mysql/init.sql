@@ -349,11 +349,11 @@ BEGIN
     VALUES (uname, pword, email);
 END //
 
-CREATE PROCEDURE login_user(IN uname varchar(32), IN pword char(40))
+CREATE PROCEDURE login_user(IN uname varchar(64), IN pword char(40))
 BEGIN
     SELECT UserID, Username, Password, Email
     FROM USERS
-    WHERE Username = uname AND Password = pword;
+    WHERE (Username = uname OR Email = uname) AND Password = pword;
 END //
 
 CREATE PROCEDURE username_taken(IN uname varchar(32))
@@ -370,7 +370,7 @@ BEGIN
     WHERE u.Email = mail;
 END //
 
-CREATE PROCEDURE login_admin(IN uname varchar(32), IN pword char(40))
+CREATE PROCEDURE login_admin(IN uname varchar(64), IN pword char(40))
 BEGIN
     SELECT AdminID, Username, Password, Role
     FROM ADMINS

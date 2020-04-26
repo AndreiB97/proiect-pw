@@ -36,7 +36,7 @@ class Account extends React.Component {
                 localStorage.setItem('role', result.data.role);
             }
 
-            localStorage.setItem('username', this.state.login_username);
+            localStorage.setItem('username', result.data.username);
             localStorage.setItem('token', result.data.token);
 
             this.props.refresh();
@@ -103,7 +103,7 @@ class Account extends React.Component {
                 <button className={'DropdownButton'}>Login</button>
                 <div className={'DropdownContent'}>
                     <form className={'AccountForm'} onSubmit={this.onLogin}>
-                        <input type={'text'} size={'32'} maxLength={'32'} placeholder={'Username'}
+                        <input type={'text'} size={'32'} maxLength={'64'} placeholder={'Username or E-Mail'}
                                pattern={'.{4,}'} onChange={(event) => {
                             this.setState({'login_username': event.target.value});
                         }} required/>

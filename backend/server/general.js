@@ -38,6 +38,7 @@ router.post('/login', (req, res) => {
                     res.status(200).json({
                         'token': token,
                         'role': result[0].Role,
+                        'username': result[0].Username
                     }).end();
                 }
             });
@@ -45,7 +46,8 @@ router.post('/login', (req, res) => {
             const token = users.log_user(result[0]);
 
             res.status(200).json({
-                'token': token
+                'token': token,
+                'username': result[0].Username
             }).end();
         }
     });

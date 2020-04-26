@@ -10,7 +10,6 @@ import SupportPage from "./SupportPage";
 
 // TODO gdpr form
 // TODO user name
-// TODO login with email or username
 
 class App extends React.Component {
     constructor(props) {
