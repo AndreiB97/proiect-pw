@@ -9,7 +9,6 @@ import AdminPage from "./AdminPage";
 import SupportPage from "./SupportPage";
 
 // TODO gdpr form
-// TODO remove useless class names
 // TODO user name
 // TODO login with email or username
 // TODO display error messages
@@ -29,7 +28,7 @@ class App extends React.Component {
                 <div className="App">
                     <Header refresh={this.forceUpdate}/>
                     <hr/>
-                    <div className={'Content'}>
+                    <div>
                         {
                             localStorage.getItem('role') === '1' ?
                                 <Redirect to={'/admin'}/> :

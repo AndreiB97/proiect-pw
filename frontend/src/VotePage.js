@@ -332,7 +332,7 @@ class VotePage extends React.Component {
         }
 
         return (
-            <div className={'UserActionsContainer'}>
+            <div>
                 {this.getQuestionActions()}
                 {this.getSubmitForm()}
             </div>
@@ -341,7 +341,7 @@ class VotePage extends React.Component {
 
     render() {
         return (
-            <div className={'VotePage'}>
+            <div>
                 {this.getVoteUI()}
                 {this.getUserActionsUI()}
             </div>
