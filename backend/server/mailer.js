@@ -17,7 +17,7 @@ function sendConfirmation(user_data) {
         to: user_dataemail,
         subject: 'Confirm Would You Rather account registration',
         text: `In order to complete your account registration please click the following link:\n` +
-            `http://localhost:80/${user_id}`
+            `http://localhost:3000/#/${user_id}`
     };
 
     const salt = Math.random();
