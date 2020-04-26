@@ -29,7 +29,7 @@ class ContactPage extends React.Component {
         params.append('message', this.state.text_value);
 
         axios.put(
-            'http://localhost:80/contact',
+            'http://localhost:80/user/contact',
             params,
             {
                 headers: {
@@ -50,7 +50,7 @@ class ContactPage extends React.Component {
 
     getMessages() {
         axios.get(
-            'http://localhost:80/contact',
+            'http://localhost:80/user/contact',
             {
                 'headers': {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`
