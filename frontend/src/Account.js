@@ -2,8 +2,6 @@ import React from "react";
 import axios from 'axios';
 import './Account.scss';
 
-// TODO clear register fields after send
-
 class Account extends React.Component {
     constructor(props) {
         super(props);
@@ -17,7 +15,10 @@ class Account extends React.Component {
 
         this.state = {
             'login_message': '',
-            'register_message': ''
+            'register_message': '',
+            'register_email': '',
+            'register_username': '',
+            'register_password': ''
         };
     }
 
@@ -53,6 +54,12 @@ class Account extends React.Component {
     };
 
     onRegister() {
+        if (this.state.register_email.length === 0 ||
+            this.state.register_username === 0 ||
+            this.state.register_password === 0) {
+            return;
+        }
+
         let params = new URLSearchParams();
 
         params.append('email', this.state.register_email);
@@ -63,7 +70,12 @@ class Account extends React.Component {
             'http://localhost:80/register',
             params
         ).then((result) => {
-            this.setState({'register_message': 'Registration complete'});
+            this.setState({
+                'register_message': 'Registration complete',
+                'register_username': '',
+                'register_email': '',
+                'register_password': ''
+            });
 
             this.props.refresh();
         }).catch((error) => {
@@ -113,18 +125,19 @@ class Account extends React.Component {
                 <button className={'DropdownButton'}>Register</button>
                 <div className={'DropdownContent'}>
                     <form className={'AccountForm'} onSubmit={this.onRegister}>
-                        <input type={'text'} size={'32'} maxLength={'64'} placeholder={'E-Mail'}
-                               pattern={'[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,}$'} onChange={(event) => {
-                            this.setState({'register_email': event.target.value});
-                        }} required/>
+                        <input type={'text'} size={'32'} value={this.state.register_email} maxLength={'64'}
+                               placeholder={'E-Mail'} pattern={'[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,}$'}
+                               onChange={(event) => {
+                                   this.setState({'register_email': event.target.value});
+                               }}/>
                         <input type={'text'} size={'32'} maxLength={'32'} placeholder={'Username'}
-                               pattern={'.{4,}'} onChange={(event) => {
-                            this.setState({'register_username': event.target.value});
-                        }} required/>
+                               pattern={'.{4,}'} value={this.state.register_username} onChange={(event) => {
+                                   this.setState({'register_username': event.target.value});
+                               }}/>
                         <input type={'password'} size={'32'} maxLength={'32'} placeholder={'Password'}
-                               pattern={'.{8,}'} onChange={(event) => {
-                            this.setState({'register_password': event.target.value});
-                        }} required/>
+                               pattern={'.{8,}'} value={this.state.register_password} onChange={(event) => {
+                                   this.setState({'register_password': event.target.value});
+                               }}/>
                         <input className={'Submit'} type={'submit'} value={'Register'}/>
                         <p className={'Message'}>{this.state.register_message}</p>
                     </form>
