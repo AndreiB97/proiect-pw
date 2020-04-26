@@ -7,8 +7,6 @@ const crypto = require('crypto-js');
 const cors_header_name = 'Access-Control-Allow-Origin';
 const cors_header_value = '*';
 
-// TODO make sure support can't do admin actions
-
 router.post('/register', (req, res) => {
     res.header(cors_header_name, cors_header_value);
 
@@ -21,6 +19,11 @@ router.post('/register', (req, res) => {
 
     if (user_data === undefined) {
         res.status(400).json({'error': 'Invalid token'}).end();
+        return;
+    }
+
+    if (user_data.Role !== 1) {
+        res.status(400).json({'error': 'Wrong account role'}).end();
         return;
     }
 
@@ -72,6 +75,11 @@ router.get('/user_submitted', (req, res) => {
         return;
     }
 
+    if (user_data.Role !== 1) {
+        res.status(400).json({'error': 'Wrong account role'}).end();
+        return;
+    }
+
     mysql.call_proc('get_user_submitted_questions', [], (result) => {
         res.status(200).json(result).end();
     });
@@ -89,6 +97,11 @@ router.post('/user_submitted', (req, res) => {
 
     if (user_data === undefined) {
         res.status(400).json({'error': 'Invalid token'}).end();
+        return;
+    }
+
+    if (user_data.Role !== 1) {
+        res.status(400).json({'error': 'Wrong account role'}).end();
         return;
     }
 
@@ -138,6 +151,11 @@ router.get('/reported', (req, res) => {
         return;
     }
 
+    if (user_data.Role !== 1) {
+        res.status(400).json({'error': 'Wrong account role'}).end();
+        return;
+    }
+
     mysql.call_proc('get_questions_reported_by_users', [], (result) => {
         res.status(200).json(result).end();
     });
@@ -155,6 +173,11 @@ router.post('/reported', (req, res) => {
 
     if (user_data === undefined) {
         res.status(400).json({'error': 'Invalid token'}).end();
+        return;
+    }
+
+    if (user_data.Role !== 1) {
+        res.status(400).json({'error': 'Wrong account role'}).end();
         return;
     }
 
