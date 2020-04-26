@@ -16,7 +16,9 @@ class SupportPage extends React.Component {
         this.onFlagImportant = this.onFlagImportant.bind(this);
         this.onReport = this.onReport.bind(this);
         this.getMessages = this.getMessages.bind(this);
+    }
 
+    componentDidMount() {
         this.getMessages();
     }
 

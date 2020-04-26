@@ -16,7 +16,9 @@ class AdminReviewUserSubmitted extends React.Component {
         this.getSubmittedQuestionsTable = this.getSubmittedQuestionsTable.bind(this);
         this.getSubmittedQuestionsNavigation = this.getSubmittedQuestionsNavigation.bind(this);
         this.getUserSubmitted = this.getUserSubmitted.bind(this);
+    }
 
+    componentDidMount() {
         this.getUserSubmitted();
     }
 

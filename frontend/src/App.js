@@ -11,9 +11,6 @@ import SupportPage from "./SupportPage";
 // TODO gdpr form
 // TODO user name
 // TODO login with email or username
-// TODO display error messages
-// TODO get rid of splices
-// TODO get rid of componentDidMount
 
 class App extends React.Component {
     constructor(props) {
@@ -38,9 +35,10 @@ class App extends React.Component {
                         }
                         <Route path={'/admin'} component={AdminPage}/>
                         <Route path={'/support'} component={SupportPage}/>
-                        <Route exact path={'/'} component={() => {return (<VotePage/>)}}/>
-                        <Route path={'/faq'} component={() => {return (<FAQPage/>)}}/>
-                        <Route path={'/contact'} component={() => {return (<ContactPage/>)}}/>
+                        <Route exact path={'/'} component={VotePage}/>
+                        <Route path={'/:id'} component={VotePage}/>
+                        <Route path={'/faq'} component={FAQPage}/>
+                        <Route path={'/contact'} component={ContactPage}/>
                     </div>
                 </div>
             </HashRouter>

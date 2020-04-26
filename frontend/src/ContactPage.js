@@ -15,7 +15,9 @@ class ContactPage extends React.Component {
 
         this.onSend = this.onSend.bind(this);
         this.getMessages = this.getMessages.bind(this);
+    }
 
+    componentDidMount() {
         this.getMessages();
     }
 

@@ -12,7 +12,9 @@ class FAQPage extends React.Component {
         };
 
         this.getFAQ = this.getFAQ.bind(this);
+    }
 
+    componentDidMount() {
         this.getFAQ()
     }
 

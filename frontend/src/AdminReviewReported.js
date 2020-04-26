@@ -16,7 +16,9 @@ class AdminReviewReported extends React.Component {
         this.getSubmittedQuestions = this.getSubmittedQuestions.bind(this);
         this.getReportedQuestionsNavigation = this.getReportedQuestionsNavigation.bind(this);
         this.getReported = this.getReported.bind(this);
+    }
 
+    componentDidMount() {
         this.getReported();
     }
 
