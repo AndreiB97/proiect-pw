@@ -1,16 +1,25 @@
 const express = require('express');
-const routes = require('./routes.js');
 const cors = require('cors');
+
+const support = require('./support.js');
+const admin = require('./admin.js');
+const general = require('./general.js');
+const user = require('./user.js');
+const confirmation = require('./confirmation.js');
 
 const app = express();
 
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
-app.use('/', routes);
 
+app.use('/support', support);
+app.use('/admin', admin);
+app.use('/', general);
+app.use('/user', user);
+app.use('/confirmation', confirmation);
 
-app.use((err, req, res, next) => {
+app.use((err, req, res) => {
     let status = 500;
     let message = 'Unknown server error';
 
