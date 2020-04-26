@@ -13,16 +13,17 @@ const transporter = nodemailer.createTransport({
 let awaiting_confirmation = {};
 
 function sendConfirmation(user_data) {
+    const salt = Math.random();
+    const user_id = crypto.SHA1(salt + user_data.username).toString();
+
     const options = {
         to: user_dataemail,
         subject: 'Confirm Would You Rather account registration',
         text: `In order to complete your account registration please click the following link:\n` +
-            `http://localhost:3000/#/${user_id}`
+            `http://localhost:3000/#/confirmation/${user_id}`
     };
 
-    const salt = Math.random();
-
-    awaiting_confirmation[crypto.SHA1(salt + user_data.username).toString()] = {
+    awaiting_confirmation[user_id] = {
         'status': true,
         'user_data': user_data
     };

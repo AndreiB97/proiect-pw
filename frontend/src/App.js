@@ -36,7 +36,7 @@ class App extends React.Component {
                         <Route path={'/admin'} component={AdminPage}/>
                         <Route path={'/support'} component={SupportPage}/>
                         <Route exact path={'/'} component={VotePage}/>
-                        <Route path={'/:id'} component={VotePage}/>
+                        <Route path={'/confirmation/:id'} component={VotePage}/>
                         <Route path={'/faq'} component={FAQPage}/>
                         <Route path={'/contact'} component={ContactPage}/>
                     </div>
