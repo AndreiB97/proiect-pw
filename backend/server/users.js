@@ -5,15 +5,16 @@ let logged_admins = {};
 
 const options = {};
 
-// TODO maybe don't save ALL the user info (only keep userid and username?)
-
 function log_user(user_data) {
     const token = generate_token({
         'username': user_data.Username,
         'password': user_data.Password
     });
 
-    logged_users[token] = user_data;
+    logged_users[token] = {
+        'UserID': user_data.UserID,
+        'Email': user_data.Email
+    };
 
     return token;
 }
@@ -24,7 +25,10 @@ function log_admin(user_data) {
         'password': user_data.Password
     });
 
-    logged_admins[token] = user_data;
+    logged_admins[token] = {
+        'AdminID': user_data.AdminID,
+        'Role': user_data.Role
+    };
 
     return token;
 }
@@ -34,7 +38,6 @@ function generate_token(payload) {
 }
 
 function get_user(token) {
-    console.log(logged_users);
     return logged_users[token];
 }
 
