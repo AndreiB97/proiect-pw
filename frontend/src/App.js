@@ -6,10 +6,11 @@ import VotePage from "./VotePage";
 import FAQPage from "./FAQPage";
 import ContactPage from "./ContactPage";
 import AdminPage from "./AdminPage";
+import SupportPage from "./SupportPage";
 
-// TODO support account page
 // TODO gdpr form
 // TODO remove useless class names
+// TODO are async axios request necessary?
 
 class App extends React.Component {
     constructor(props) {
@@ -33,6 +34,7 @@ class App extends React.Component {
                                     <span/>
                         }
                         <Route path={'/admin'} component={AdminPage}/>
+                        <Route path={'/support'} component={SupportPage}/>
                         <Route exact path={'/'} component={() => {return (<VotePage/>)}}/>
                         <Route path={'/faq'} component={() => {return (<FAQPage/>)}}/>
                         <Route path={'/contact'} component={() => {return (<ContactPage/>)}}/>

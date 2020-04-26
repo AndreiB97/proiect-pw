@@ -1,0 +1,34 @@
+.SupportPage {
+
+  text-align: justify;
+}
+
+.MessageContainer {
+  text-align: justify;
+  font-size: 20px;
+
+  textarea {
+    background-color: #202020;
+    border: none;
+    color: white;
+    min-width: 400px;
+    min-height: 100px;
+    font-size: 20px;
+    padding: 5px 10px;
+  }
+
+  button {
+    background-color: #303030;
+    border: none;
+    color: white;
+    font-size: 20px;
+    padding: 10px 15px;
+    border-radius: 10px;
+    margin-top: 5px;
+    margin-right: 5px;
+  }
+
+  button:hover {
+    background-color: #404040;
+  }
+}
