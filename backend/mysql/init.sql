@@ -215,8 +215,9 @@ END //
 
 CREATE PROCEDURE get_messages()
 BEGIN
-    SELECT *
-    FROM MESSAGES;
+    SELECT m.MessageID, u.Username, m.Message, m.Response
+    FROM MESSAGES m, USERS u
+    WHERE m.UserID = u.UserID;
 END //
 
 CREATE PROCEDURE get_unanswered_messages()
