@@ -5,7 +5,6 @@ const users = require('./users.js');
 
 // TODO make sure support can't do admin actions
 // TODO make sure admins can't do support actions
-// TODO recheck status codes
 // TODO maybe split this into multiple files
 
 const cors_header_name = 'Access-Control-Allow-Origin';
@@ -278,7 +277,7 @@ router.post('/login', (req, res) => {
                     crypto.SHA1(req.body.password).toString()
                 ], (result) => {
                 if (result.length === 0) {
-                    res.status(200).json({'error': 'Wrong Username or Password'}).end();
+                    res.status(400).json({'error': 'Wrong Username or Password'}).end();
                 } else {
                     const token = users.log_admin(result[0]);
 
@@ -331,11 +330,11 @@ router.post('/register', (req, res) => {
                         res.status(200).end();
                     })
                 } else {
-                    res.status(200).json({'error': 'E-Mail taken'}).end();
+                    res.status(400).json({'error': 'E-Mail taken'}).end();
                 }
             })
         } else {
-            res.status(200).json({'error': 'Username taken'}).end();
+            res.status(400).json({'error': 'Username taken'}).end();
         }
     });
 });
@@ -564,7 +563,7 @@ router.get('/contact', (req, res) => {
     const user_data = users.get_user(token);
 
     if (user_data === undefined) {
-        res.status(200).json({'error': 'Invalid token'}).end();
+        res.status(400).json({'error': 'Invalid token'}).end();
         return;
     }
 
