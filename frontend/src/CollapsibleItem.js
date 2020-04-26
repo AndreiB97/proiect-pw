@@ -33,7 +33,7 @@ class CollapsibleItem extends React.Component {
             <div>
                 <button className={'Collapsible'} onClick={this.toggleCollapsible}>
                     {
-                        this.props.header.length > 32 ?
+                        this.props.header.length > 64 ?
                             this.props.header.substr(0, 32) + '...' :
                             this.props.header
                     }
