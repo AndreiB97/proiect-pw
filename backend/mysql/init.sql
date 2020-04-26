@@ -332,7 +332,7 @@ END //
 CREATE PROCEDURE get_flagged_important_messages()
 BEGIN
     SELECT m.Message, m.Response
-    FROM MESSAGES m, ADMINS a
+    FROM MESSAGES m
     WHERE m.Response IS NOT NULL AND m.Flagged_important = 1;
 END //
 
