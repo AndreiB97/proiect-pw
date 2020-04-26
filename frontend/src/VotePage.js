@@ -2,6 +2,8 @@ import React from "react";
 import './VotePage.scss';
 import axios from "axios";
 
+// TODO axios catch
+
 class VotePage extends React.Component {
     constructor(props) {
         super(props);
@@ -24,14 +26,24 @@ class VotePage extends React.Component {
         this.getUserActionsUI = this.getUserActionsUI.bind(this);
         this.getSubmitForm = this.getSubmitForm.bind(this);
         this.getQuestionActions = this.getQuestionActions.bind(this);
-
-        this.getQuestion();
     }
 
     componentDidMount() {
         if ('id' in this.props.match.params) {
-            console.log('here');
+            axios.post(
+                `http://localhost:80/confirmation/${this.props.match.params.id}`
+            ).then((result) => {
+                alert(result.data.message);
+            }).catch((error) => {
+                if (error.response !== undefined) {
+                    this.setState({'register_message': error.response.data.error});
+                } else {
+                    console.log(error);
+                }
+            })
         }
+
+        this.getQuestion();
     }
 
     pickAnswer(answer) {
