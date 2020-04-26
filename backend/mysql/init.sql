@@ -220,6 +220,13 @@ BEGIN
     WHERE m.UserID = u.UserID;
 END //
 
+CREATE PROCEDURE get_message(IN message_id integer)
+BEGIN
+    SELECT u.Email, m.Message
+    FROM MESSAGES m, USERS u
+    WHERE m.MessageID = message_id AND u.UserID = m.UserID;
+END //
+
 CREATE PROCEDURE get_unanswered_messages()
 BEGIN
     SELECT m.MessageID, u.Username, m.Message

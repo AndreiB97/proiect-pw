@@ -2,6 +2,7 @@ const router = require('express').Router();
 
 const mysql = require('./dbInterface.js');
 const users = require('./users.js');
+const mailer = require('./mailer.js');
 
 const cors_header_name = 'Access-Control-Allow-Origin';
 const cors_header_value = '*';
@@ -53,6 +54,11 @@ router.post('/messages', (req, res) => {
             req.body.response], () => {
             res.status(200).end();
         });
+
+        mysql.call_proc('get_message', [req.body.message_id], (result) => {
+            mailer.sendResponse(result.Email, result.Message, req.body.response, user_data.Username);
+        });
+
     } else if ('important' in req.body) {
         mysql.call_proc('flag_message_important', [req.body.message_id, req.body.important],
             () => {

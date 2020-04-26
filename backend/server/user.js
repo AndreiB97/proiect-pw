@@ -73,7 +73,6 @@ router.post('/score', (req, res) => {
 });
 
 router.put('/contact', (req, res) => {
-    // TODO email when answered
     res.header(cors_header_name, cors_header_value);
 
     if (! req.headers.authorization) {

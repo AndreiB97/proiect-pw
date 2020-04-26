@@ -1,6 +1,6 @@
 const nodemailer = require('nodemailer');
 
-const mysql = require('./mysql.js');
+const mysql = require('./dbInterface.js');
 
 const transporter = nodemailer.createTransport({
     service: 'gmail',
@@ -36,12 +36,14 @@ function sendConfirmation(user_data) {
     })
 }
 
-function sendResponse(email, response) {
-    // TODO
+function sendResponse(email, message, response, username) {
     const options = {
         to: email,
-        subject: '',
-        text: ``
+        subject: 'Your message has been answered',
+        text: `You asked:\n` +
+            `${message}\n` +
+            `${username} says:\n` +
+            response
     };
 
     transporter.sendMail(options, (error, info) => {
