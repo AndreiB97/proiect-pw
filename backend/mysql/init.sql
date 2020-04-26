@@ -15,6 +15,8 @@ CREATE TABLE USERS (
     Email varchar(64) not null unique,
     Username varchar(32) not null unique,
     Password char(40) not null,
+    FirstName varchar(32),
+    LastName varchar(32),
     Strikes integer default 0
 );
 
@@ -343,10 +345,11 @@ BEGIN
     WHERE m.Response IS NOT NULL AND m.Flagged_important = 1;
 END //
 
-CREATE PROCEDURE register_user(IN uname varchar(32), IN pword char(40), IN email varchar(64))
+CREATE PROCEDURE register_user(IN uname varchar(32), IN pword char(40), IN email varchar(64),
+    IN first_name varchar(32), IN last_name varchar(32))
 BEGIN
-    INSERT INTO USERS(Username, Password, Email)
-    VALUES (uname, pword, email);
+    INSERT INTO USERS(Username, Password, Email, FirstName, LastName)
+    VALUES (uname, pword, email, first_name, last_name);
 END //
 
 CREATE PROCEDURE login_user(IN uname varchar(64), IN pword char(40))

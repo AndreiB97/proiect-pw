@@ -18,7 +18,9 @@ class Account extends React.Component {
             'register_message': '',
             'register_email': '',
             'register_username': '',
-            'register_password': ''
+            'register_password': '',
+            'register_first_name': '',
+            'register_last_name': ''
         };
     }
 
@@ -55,8 +57,10 @@ class Account extends React.Component {
 
     onRegister() {
         if (this.state.register_email.length === 0 ||
-            this.state.register_username === 0 ||
-            this.state.register_password === 0) {
+            this.state.register_username.length === 0 ||
+            this.state.register_password.length === 0 ||
+            this.state.register_first_name.length === 0 ||
+            this.state.register_last_name.length === 0) {
             return;
         }
 
@@ -65,6 +69,8 @@ class Account extends React.Component {
         params.append('email', this.state.register_email);
         params.append('username', this.state.register_username);
         params.append('password', this.state.register_password);
+        params.append('first_name', this.state.register_first_name);
+        params.append('last_name', this.state.register_last_name);
 
         axios.post(
             'http://localhost:80/register',
@@ -103,7 +109,7 @@ class Account extends React.Component {
                 <button className={'DropdownButton'}>Login</button>
                 <div className={'DropdownContent'}>
                     <form className={'AccountForm'} onSubmit={this.onLogin}>
-                        <input type={'text'} size={'32'} maxLength={'64'} placeholder={'Username or E-Mail'}
+                        <input type={'text'} size={'32'} maxLength={'64'} placeholder={'Username / E-Mail'}
                                pattern={'.{4,}'} onChange={(event) => {
                             this.setState({'login_username': event.target.value});
                         }} required/>
@@ -133,6 +139,14 @@ class Account extends React.Component {
                         <input type={'text'} size={'32'} maxLength={'32'} placeholder={'Username'}
                                pattern={'.{4,}'} value={this.state.register_username} onChange={(event) => {
                                    this.setState({'register_username': event.target.value});
+                               }}/>
+                        <input type={'text'} size={'32'} maxLength={'32'} placeholder={'First name'}
+                               value={this.state.register_first_name} onChange={(event) => {
+                                   this.setState({'register_first_name': event.target.value});
+                               }}/>
+                        <input type={'text'} size={'32'} maxLength={'32'} placeholder={'First name'}
+                               value={this.state.register_last_name} onChange={(event) => {
+                                   this.setState({'register_last_name': event.target.value});
                                }}/>
                         <input type={'password'} size={'32'} maxLength={'32'} placeholder={'Password'}
                                pattern={'.{8,}'} value={this.state.register_password} onChange={(event) => {

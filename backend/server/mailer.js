@@ -67,7 +67,8 @@ function confirm(id) {
 
         mysql.call_proc('register_user', [awaiting_confirmation[id].user_data.username,
             crypto.SHA1(awaiting_confirmation[id].user_data.password).toString(),
-            awaiting_confirmation[id].user_data.email], () => {});
+            awaiting_confirmation[id].user_data.email, awaiting_confirmation[id].user_data.first_name,
+            awaiting_confirmation[id].user_data.last_name], () => {});
 
         return {
             'message': 'Confirmation finished'

@@ -71,6 +71,16 @@ router.post('/register', (req, res) => {
         return;
     }
 
+    if (! ('first_name' in req.body)) {
+        res.status(400).json({'error': 'First name missing'}).end();
+        return;
+    }
+
+    if (! ('last_name' in req.body)) {
+        res.status(400).json({'error': 'Last name missing'}).end();
+        return;
+    }
+
     mysql.call_proc('username_taken', [req.body.username], (result) => {
         // reasons to hate javascript: callbacks
         if (result.length === 0) {
