@@ -28,6 +28,12 @@ class VotePage extends React.Component {
         this.getQuestion();
     }
 
+    componentDidMount() {
+        if ('id' in this.props.match.params) {
+            console.log('here');
+        }
+    }
+
     pickAnswer(answer) {
         if (this.state.questions[this.state.current_question_index].voted === 0) {
             const params = new URLSearchParams();
@@ -158,7 +164,7 @@ class VotePage extends React.Component {
         };
 
         axios.post(
-            'http://localhost:80/score',
+            'http://localhost:80/user/score',
             params,
             options
         ).catch((error) => {
@@ -204,7 +210,7 @@ class VotePage extends React.Component {
         };
 
         axios.put(
-            'http://localhost:80/report',
+            'http://localhost:80/user/report',
             params,
             options
         ).then(() => {
