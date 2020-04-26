@@ -1,8 +1,9 @@
 const router = require('express').Router();
+const crypto = require('crypto-js');
 
 const mysql = require('./dbInterface.js');
 const users = require('./users.js');
-const crypto = require('crypto-js');
+const mailer = require('./mailer.js');
 
 const cors_header_name = 'Access-Control-Allow-Origin';
 const cors_header_value = '*';
@@ -51,8 +52,6 @@ router.post('/login', (req, res) => {
 });
 
 router.post('/register', (req, res) => {
-    // TODO send confirmation email
-
     res.header(cors_header_name, cors_header_value);
 
     if (! ('username' in req.body)) {
@@ -75,13 +74,8 @@ router.post('/register', (req, res) => {
         if (result.length === 0) {
             mysql.call_proc('email_taken', [req.body.email], (result) => {
                 if (result.length === 0) {
-                    mysql.call_proc('register_user', [
-                        req.body.username,
-                        crypto.SHA1(req.body.password).toString(),
-                        req.body.email
-                    ], () => {
-                        res.status(200).end();
-                    })
+                    mailer.sendConfirmation(req.body);
+                    res.status(200).end();
                 } else {
                     res.status(400).json({'error': 'E-Mail taken'}).end();
                 }
