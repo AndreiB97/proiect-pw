@@ -79,4 +79,31 @@ router.post('/messages', (req, res) => {
     }
 });
 
+router.delete('/messages/:id', (req, res) => {
+    res.header(cors_header_name, cors_header_value);
+
+    const id = req.params.id;
+
+    if (! req.headers.authorization) {
+        res.status(400).json({'error': 'Token missing'}).end();
+        return;
+    }
+
+    const user_data = users.get_admin(req.headers.authorization.split(' ')[1]);
+
+    if (user_data === undefined) {
+        res.status(400).json({'error': 'Invalid token'}).end();
+        return;
+    }
+
+    if (user_data.Role !== 2) {
+        res.status(400).json({'error': 'Wrong account role'}).end();
+        return;
+    }
+
+    mysql.call_proc('delete_message', [id], () => {
+        res.status(200).end();
+    });
+})
+
 module.exports = router;
