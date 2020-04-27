@@ -75,11 +75,13 @@ class Account extends React.Component {
         axios.post(
             'http://localhost:80/register',
             params
-        ).then((result) => {
+        ).then(() => {
             this.setState({
                 'register_message': 'Confirmation email sent',
                 'register_username': '',
                 'register_email': '',
+                'register_first_name': '',
+                'register_last_name': '',
                 'register_password': ''
             });
 
