@@ -82,7 +82,6 @@ router.post('/register', (req, res) => {
     }
 
     mysql.call_proc('username_taken', [req.body.username], (result) => {
-        // reasons to hate javascript: callbacks
         if (result.length === 0) {
             mysql.call_proc('email_taken', [req.body.email], (result) => {
                 if (result.length === 0) {
