@@ -16,6 +16,7 @@ class SupportPage extends React.Component {
         this.onFlagImportant = this.onFlagImportant.bind(this);
         this.onReport = this.onReport.bind(this);
         this.getMessages = this.getMessages.bind(this);
+        this.onDelete = this.onDelete.bind(this);
     }
 
     componentDidMount() {
@@ -83,11 +84,7 @@ class SupportPage extends React.Component {
     }
 
     onFlagImportant(message) {
-        if (message['important'] === undefined || message['important'] === false) {
-            message.important = true;
-        } else {
-            message.important = false;
-        }
+        message.important = message['important'] === undefined || message['important'] === false;
 
         const params = new URLSearchParams();
 
@@ -115,7 +112,7 @@ class SupportPage extends React.Component {
         });
     }
 
-    onReport(message, index) {
+    onReport(message) {
         const params = new URLSearchParams();
 
         params.append('message_id', message.MessageID);
@@ -141,7 +138,30 @@ class SupportPage extends React.Component {
         });
     }
 
-    displayMessage(message, index) {
+    onDelete(message) {
+        const options = {
+            'headers': {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+            }
+        }
+
+        console.log(message);
+
+        axios.delete(
+            `http://localhost:80/support/messages/${message.MessageID}`,
+            options
+        ).then(() => {
+            this.getMessages()
+        }).catch((error) => {
+            if (error.response !== undefined) {
+                console.log(error.response);
+            } else {
+                console.log(error);
+            }
+        });
+    }
+
+    displayMessage(message) {
         message['text_value'] = '';
         return (
             <CollapsibleItem header={message.Message}
@@ -149,8 +169,11 @@ class SupportPage extends React.Component {
                                  <div className={'MessageContainer'}>
                                      <p><span className={'Highlight'}>{message.Username}</span> says:</p>
                                      <p>{message.Message}</p>
-                                     <button onClick={() => {this.onReport(message, index)}}>
+                                     <button onClick={() => {this.onReport(message)}}>
                                          Strike user
+                                     </button>
+                                     <button onClick={() => {this.onDelete(message)}}>
+                                         Delete
                                      </button>
                                      {
                                          message.Response !== null ?
