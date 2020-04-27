@@ -8,12 +8,17 @@ import ContactPage from "./ContactPage";
 import AdminPage from "./AdminPage";
 import SupportPage from "./SupportPage";
 
-// TODO gdpr form
-// TODO user name
-
 class App extends React.Component {
     constructor(props) {
         super(props);
+
+        const consent = localStorage.getItem('consent');
+
+        if (!consent) {
+            alert('This website uses cookies');
+
+            localStorage.setItem('consent', 'true');
+        }
 
         this.forceUpdate = this.forceUpdate.bind(this);
     }
