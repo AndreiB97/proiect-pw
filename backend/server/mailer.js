@@ -1,4 +1,5 @@
 const nodemailer = require('nodemailer');
+const crypto = require('crypto-js');
 
 const mysql = require('./dbInterface.js');
 
@@ -17,7 +18,7 @@ function sendConfirmation(user_data) {
     const user_id = crypto.SHA1(salt + user_data.username).toString();
 
     const options = {
-        to: user_dataemail,
+        to: user_data.email,
         subject: 'Confirm Would You Rather account registration',
         text: `In order to complete your account registration please click the following link:\n` +
             `http://localhost:3000/#/confirmation/${user_id}`
@@ -38,6 +39,10 @@ function sendConfirmation(user_data) {
 }
 
 function sendResponse(email, message, response, username) {
+    if (email === undefined) {
+        return;
+    }
+
     const options = {
         to: email,
         subject: 'Your message has been answered',
@@ -62,13 +67,13 @@ function confirm(id) {
             'message': 'Invalid confirmation link'
         }
     } else if (awaiting_confirmation[id].status) {
-        awaiting_confirmation[id].status = false;
-        awaiting_confirmation[id].user_data = undefined;
-
         mysql.call_proc('register_user', [awaiting_confirmation[id].user_data.username,
             crypto.SHA1(awaiting_confirmation[id].user_data.password).toString(),
             awaiting_confirmation[id].user_data.email, awaiting_confirmation[id].user_data.first_name,
             awaiting_confirmation[id].user_data.last_name], () => {});
+
+        awaiting_confirmation[id].status = false;
+        awaiting_confirmation[id].user_data = undefined;
 
         return {
             'message': 'Confirmation finished'
