@@ -64,7 +64,7 @@ INSERT INTO ADMINS(Username, Password, Role)
 VALUES ('support', SHA1('root'), 2);
 
 INSERT INTO USERS(Username, Password, Email)
-VALUES ('curiosity', SHA1('aaaaaaaa'), 'aaaa@aaaa.a');
+VALUES ('curiosity', SHA1('curiosity'), 'aaaa@aaaa.a');
 
 INSERT INTO MESSAGES(UserID, Message, AdminID, Response, Flagged_important)
 VALUES
@@ -420,6 +420,12 @@ CREATE PROCEDURE register_admin(IN uname varchar(32), IN pword char(40), IN role
 BEGIN
     INSERT INTO ADMINS(Username, Password, Role)
     VALUES (uname, pword, role);
+END //
+
+CREATE PROCEDURE delete_message(IN message_id integer)
+BEGIN
+    DELETE FROM MESSAGES
+    WHERE MessageID = message_id;
 END //
 
 DELIMITER ;
