@@ -20,16 +20,16 @@ app.use('/user', user);
 app.use('/confirmation', confirmation);
 
 app.use((err, req, res) => {
-    let status = 500;
+    let code = 500;
     let message = 'Unknown server error';
 
     if (err.httpStatus) {
-        status = err.httpStatus;
+        code = err.httpStatus;
         message = err.message;
     }
 
-    res.status(status).json({
-        error: message
+    res.status(code).json({
+        'error': message
     });
 });
 
