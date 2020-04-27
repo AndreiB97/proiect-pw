@@ -8,31 +8,17 @@ const connection = mysql.createConnection({
     database: process.env.DB_NAME
 });
 
-let retries = 0;
-
-while (true) {
-
-    try {
-        connection.connect((error) => {
-            if (error) {
-                throw error;
-            }
-
-            console.log('Connected to the database.');
-        });
-
-        break;
-    } catch(error) {
-        console.log(`Error: ${error.message} occurred. Retry #${retries}.`);
-        retries++;
+connection.connect((error) => {
+    if (error) {
+        throw error;
     }
-}
+
+    console.log('Connected to the database.');
+});
 
 function call_proc(proc_name, params, callback) {
     let query = `CALL ${proc_name}`;
 
-    // reasons to hate javascript:
-    // type coercion
     if (params === undefined || params.length === 0) {
         query += '();';
     } else {
@@ -57,5 +43,4 @@ function call_proc(proc_name, params, callback) {
     });
 }
 
-// reasons to hate javascript: exports
 exports.call_proc = call_proc;
