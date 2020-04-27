@@ -26,7 +26,7 @@ class App extends React.Component {
     render() {
         return (
             <HashRouter>
-                <div className="App">
+                <div className='App'>
                     <Header refresh={this.forceUpdate}/>
                     <hr/>
                     <div>
