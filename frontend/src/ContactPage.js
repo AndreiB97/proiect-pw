@@ -51,6 +51,10 @@ class ContactPage extends React.Component {
     }
 
     getMessages() {
+        if (localStorage.getItem('token') === null) {
+            return;
+        }
+
         axios.get(
             'http://localhost:80/user/contact',
             {
